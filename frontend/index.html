@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Credit Default Predictor</title>
+  </head>
+  <body>
+    <h1>Credit Default Predictor</h1>
+
+    <form id="f">
+      <label>LIMIT_BAL <input name="LIMIT_BAL" type="number" step="any" value="20000"></label><br/>
+      <label>AGE <input name="AGE" type="number" step="any" value="30"></label><br/>
+      <label>SEX (1=male,2=female) <input name="SEX" type="number" value="2"></label><br/>
+
+      <h3>Repayment status</h3>
+      <label>PAY_0 <input name="PAY_0" type="number" value="0"></label><br/>
+      <label>PAY_2 <input name="PAY_2" type="number" value="0"></label><br/>
+      <label>PAY_3 <input name="PAY_3" type="number" value="0"></label><br/>
+      <label>PAY_4 <input name="PAY_4" type="number" value="0"></label><br/>
+      <label>PAY_5 <input name="PAY_5" type="number" value="0"></label><br/>
+      <label>PAY_6 <input name="PAY_6" type="number" value="0"></label><br/>
+
+      <h3>Bills</h3>
+      <label>BILL_AMT1 <input name="BILL_AMT1" type="number" step="any" value="0"></label><br/>
+      <label>BILL_AMT2 <input name="BILL_AMT2" type="number" step="any" value="0"></label><br/>
+      <label>BILL_AMT3 <input name="BILL_AMT3" type="number" step="any" value="0"></label><br/>
+      <label>BILL_AMT4 <input name="BILL_AMT4" type="number" step="any" value="0"></label><br/>
+      <label>BILL_AMT5 <input name="BILL_AMT5" type="number" step="any" value="0"></label><br/>
+      <label>BILL_AMT6 <input name="BILL_AMT6" type="number" step="any" value="0"></label><br/>
+
+      <h3>Payments</h3>
+      <label>PAY_AMT1 <input name="PAY_AMT1" type="number" step="any" value="0"></label><br/>
+      <label>PAY_AMT2 <input name="PAY_AMT2" type="number" step="any" value="0"></label><br/>
+      <label>PAY_AMT3 <input name="PAY_AMT3" type="number" step="any" value="0"></label><br/>
+      <label>PAY_AMT4 <input name="PAY_AMT4" type="number" step="any" value="0"></label><br/>
+      <label>PAY_AMT5 <input name="PAY_AMT5" type="number" step="any" value="0"></label><br/>
+      <label>PAY_AMT6 <input name="PAY_AMT6" type="number" step="any" value="0"></label><br/>
+
+      <h3>Engineered feature</h3>
+      <label>EDUCATION_MARRIAGE <input name="EDUCATION_MARRIAGE" type="number" step="any" value="12"></label><br/>
+
+      <button type="submit">Predict</button>
+    </form>
+
+    <h2 id="out"></h2>
+
+    <script src="app.js"></script>
+  </body>
+</html>

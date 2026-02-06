@@ -3,10 +3,9 @@ import joblib
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from pydantic import BaseModel
 
-MODEL_PATH = Path("models/model.joblib")
+MODEL_PATH = Path(__file__).resolve().parent / "models" / "model.joblib"
 
 app = FastAPI(title="Credit Default Predictor")
 app.add_middleware(
@@ -17,13 +16,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 model = joblib.load(MODEL_PATH)
 
 class PredictRequest(BaseModel):
     LIMIT_BAL: float
     AGE: float
     SEX: int
+    EDUCATION: int
+    MARRIAGE: int
 
     PAY_0: int
     PAY_2: int
@@ -46,8 +46,6 @@ class PredictRequest(BaseModel):
     PAY_AMT5: float
     PAY_AMT6: float
 
-    EDUCATION_MARRIAGE: float
-
 @app.get("/health")
 def health():
     return {"ok": True}
@@ -56,5 +54,5 @@ def health():
 def predict(req: PredictRequest):
     df = pd.DataFrame([req.model_dump()])
     proba = float(model.predict_proba(df)[0][1])
-    pred = int(proba >= 0.5) # 50% threshold for now
+    pred = int(proba >= 0.5)
     return {"default_probability": proba, "predicted_label": pred}

@@ -37,6 +37,38 @@ def build_pipeline():
 
     return make_pipeline(preprocessor, model)
 
+
+def load_data(file_path):
+    print(f"Loading data from {file_path}...")
+    df = pd.read_csv(file_path)
+    df = add_engineered_features(df)
+    
+    X = df.drop(columns=[TARGET])
+    y = df[TARGET]
+    
+    return train_test_split(
+        X, y, test_size=0.3, random_state=123, stratify=y
+    )
+
+def run_hyperparameter_tuning(pipe, X_train, y_train):
+    print("Running hyperparameter tuning (GridSearchCV)...")
+    param_grid = {
+        "logisticregression__C": np.logspace(-4, 4, 10)
+    }
+    grid_search = GridSearchCV(
+        pipe,
+        param_grid,
+        cv=5,
+        scoring="accuracy",
+        return_train_score=True
+    )
+    grid_search.fit(X_train, y_train)
+    
+    print(f"Best hyperparameters: {grid_search.best_params_}")
+    print(f"Best CV score: {grid_search.best_score_:.4f}")
+    return grid_search.best_estimator_
+
+
 def main():
     print("Starting training...")
 
@@ -44,16 +76,7 @@ def main():
     parser.add_argument("--tune", action="store_true") # currently running with python3 backend/train.py --tune
     args = parser.parse_args()
 
-    df = pd.read_csv("backend/data/UCI_Credit_Card.csv")
-    df = add_engineered_features(df)
-
-    X = df.drop(columns=[TARGET])
-    y = df[TARGET]
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.3, random_state=123, stratify=y
-    )
-
+    X_train, X_test, y_train, y_test = load_data('backend/data/UCI_Credit_Card.csv')
     pipe = build_pipeline()
 
     print("Build successfully. Features used:")
@@ -61,23 +84,11 @@ def main():
     print("  Numeric + engineered:", NUMERIC_FEATS + ENGINEERED_FEATS)
     print("  Ordinal:", ORDINAL_FEATS)
     print("  Categorical:", CATEGORICAL_FEATS)
+
     if args.tune:
-        print("Running hyperparameter tuning...")
-        param_grid = {
-            "logisticregression__C": np.logspace(-4, 4, 10)
-        }
-        grid_search = GridSearchCV(
-            pipe,
-            param_grid,
-            cv=5,
-            scoring="accuracy",
-            return_train_score=True
-        )
-        grid_search.fit(X_train, y_train)
-        pipe = grid_search.best_estimator_
-        print("Best hyperparameters:", grid_search.best_params_)
-        print("Best CV score:", grid_search.best_score_)
+        pipe = run_hyperparameter_tuning(pipe, X_train, y_train)
     else:
+        print("Training model with default parameters...")
         pipe.fit(X_train, y_train)
 
     outdir = Path("models")

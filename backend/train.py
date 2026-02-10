@@ -1,14 +1,16 @@
 from pathlib import Path
+import argparse
 import joblib
+import numpy as np
 import pandas as pd
 
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 
-from backend.features import (
+from features import (
     TARGET,
     DISCRETIZATION_FEATS,
     NUMERIC_FEATS,
@@ -17,11 +19,6 @@ from backend.features import (
     ENGINEERED_FEATS,
     add_engineered_features,
 )
-
-
-TARGET = "default.payment.next.month"
-
-
 
 # Helper function
 def build_pipeline():
@@ -40,21 +37,13 @@ def build_pipeline():
 
     return make_pipeline(preprocessor, model)
 
-
-def build_preprocessor():
-    """
-    Build a preprocessing pipeline that applies
-    appropriate transformation steps based on feature type.
-    """
-    return make_column_transformer(
-        (KBinsDiscretizer(n_bins=5, encode="onehot"), discretization_feats),
-        (StandardScaler(), numeric_feats + engineered_feats),  
-        (OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1), ordinal_feats),
-        (OneHotEncoder(sparse_output=False, drop="if_binary", handle_unknown="ignore"), categorical_feats),
-        remainder="drop",
-    )
-
 def main():
+    print("Starting training...")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--tune", action="store_true") # currently running with python3 backend/train.py --tune
+    args = parser.parse_args()
+
     df = pd.read_csv("backend/data/UCI_Credit_Card.csv")
     df = add_engineered_features(df)
 
@@ -65,32 +54,37 @@ def main():
         X, y, test_size=0.3, random_state=123, stratify=y
     )
 
-    preprocessor = build_preprocessor()
-    model = LogisticRegression(max_iter=5000, class_weight="balanced")
-
-    # pipe = make_pipeline(preprocessor, model)
-    # pipe.fit(X_train, y_train)
     pipe = build_pipeline()
-    pipe.fit(X_train, y_train)
-    joblib.dump(pipe, "model.joblib")
 
-
-    # Check if running correctly, will remove
-    print("Training complete")
-    print("Training rows:", X_train.shape[0])
-    print("Test rows:", X_test.shape[0])
-    print("Features used:")
-    print("discretization:", discretization_feats)
-    print("numeric:", numeric_feats + engineered_feats)
-    print("ordinal:", ordinal_feats)
-    print("categorical:", categorical_feats)
+    print("Build successfully. Features used:")
+    print("  Discretized:", DISCRETIZATION_FEATS)
+    print("  Numeric + engineered:", NUMERIC_FEATS + ENGINEERED_FEATS)
+    print("  Ordinal:", ORDINAL_FEATS)
+    print("  Categorical:", CATEGORICAL_FEATS)
+    if args.tune:
+        print("Running hyperparameter tuning...")
+        param_grid = {
+            "logisticregression__C": np.logspace(-4, 4, 10)
+        }
+        grid_search = GridSearchCV(
+            pipe,
+            param_grid,
+            cv=5,
+            scoring="accuracy",
+            return_train_score=True
+        )
+        grid_search.fit(X_train, y_train)
+        pipe = grid_search.best_estimator_
+        print("Best hyperparameters:", grid_search.best_params_)
+        print("Best CV score:", grid_search.best_score_)
+    else:
+        pipe.fit(X_train, y_train)
 
     outdir = Path("models")
     outdir.mkdir(exist_ok=True)
     joblib.dump(pipe, outdir / "model.joblib")
-
     print("Saved:", outdir / "model.joblib")
-
 
 if __name__ == "__main__":
     main()
+

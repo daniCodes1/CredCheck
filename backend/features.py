@@ -43,6 +43,13 @@ def add_engineered_features(df: pd.DataFrame) -> pd.DataFrame:
     total_pay = df[pay_cols].sum(axis=1)
     df["pay_to_bill_total"] = total_pay / total_bill  # 3. Repayment proportion
 
+    # Average amounts
+    bill_cols = [f'BILL_AMT{i}' for i in range(1, 7)]
+    pay_cols = [f'PAY_AMT{i}' for i in range(1, 7)]
+    
+    df['bill_avg'] = df[bill_cols].mean(axis=1)
+    df['pay_avg'] = df[pay_cols].mean(axis=1)
+
     # Cleanup
     df[ENGINEERED_FEATS] = df[ENGINEERED_FEATS].replace(
         [float("inf"), float("-inf")], pd.NA

@@ -4,11 +4,15 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from selector import run_rfe_selection
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC # TODO
+from sklearn.neighbors import KNeighborsClassifier # TODO
+from sklearn.model_selection import cross_validate, train_test_split, GridSearchCV
 
 from features import (
     TARGET,
@@ -21,19 +25,25 @@ from features import (
 )
 
 # Helper function
-def build_pipeline():
+def build_pipeline(model_type="logistic"):
     preprocessor = make_column_transformer(
-        (KBinsDiscretizer(n_bins=5, encode="onehot"), DISCRETIZATION_FEATS),
+        (KBinsDiscretizer(n_bins=5, encode="onehot", strategy='quantile', quantile_method='averaged_inverted_cdf'), DISCRETIZATION_FEATS),
         (StandardScaler(), NUMERIC_FEATS + ENGINEERED_FEATS),
         (OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1), ORDINAL_FEATS),
         (OneHotEncoder(sparse_output=False, drop="if_binary", handle_unknown="ignore"), CATEGORICAL_FEATS),
         remainder="drop",
     )
-
-    model = LogisticRegression(
-        max_iter=5000,
-        class_weight="balanced",
-    )
+    if model_type == "rf":
+        model = RandomForestClassifier(random_state=123, class_weight="balanced")
+        # Random Forests can have high training scores, each individual tree grows deep to capture complex interactions
+        # but it's normal and the ensemble averages out to prevent overfitting. opt for more trees when possible
+    elif model_type == "svm":
+        # SVM can be slow  because of size of dataset, maybe use a smaller c / linear kernel
+        model = SVC(kernel="rbf", class_weight="balanced", probability=True)
+    elif model_type == "knn":
+        model = KNeighborsClassifier()
+    else:
+        model = LogisticRegression(max_iter=5000, class_weight="balanced")
 
     return make_pipeline(preprocessor, model)
 
@@ -50,22 +60,54 @@ def load_data(file_path):
         X, y, test_size=0.3, random_state=123, stratify=y
     )
 
-def run_hyperparameter_tuning(pipe, X_train, y_train):
-    print("Running hyperparameter tuning (GridSearchCV)...")
-    param_grid = {
-        "logisticregression__C": np.logspace(-4, 4, 10)
+def run_hyperparameter_tuning(pipe, X_train, y_train, model_type="logistic"):
+    print(f"Running hyperparameter tuning for {model_type}...")
+    model_step_name = pipe.steps[-1][0]
+    
+    # Get name dyamically before making the grid
+    param_grids = {
+        "rf": {
+            f"{model_step_name}__n_estimators": [100, 200],
+            f"{model_step_name}__max_depth": [5, 10, 15],
+            f"{model_step_name}__min_samples_leaf": [10, 20, 80, 200],
+        },
+        "logistic": {
+            f"{model_step_name}__C": np.logspace(-4, 4, 10)
+        },
+        "knn": {
+            f"{model_step_name}__n_neighbors": [3, 5, 11]
+        },
+        "svm": {
+            f"{model_step_name}__C": [0.1, 1, 10]
+        }
     }
+
+    # if model_type == "rf":
+    #     param_grid = {
+    #         "randomforestclassifier__n_estimators": [100, 200],
+    #         "randomforestclassifier__max_depth": [None, 10, 20]
+    #     }
+    # else:
+    #     param_grid = {
+    #         "logisticregression__C": np.logspace(-4, 4, 10)
+    #     }
     grid_search = GridSearchCV(
         pipe,
-        param_grid,
+        param_grids[model_type],
         cv=5,
         scoring="accuracy",
         return_train_score=True
     )
     grid_search.fit(X_train, y_train)
     
-    print(f"Best hyperparameters: {grid_search.best_params_}")
-    print(f"Best CV score: {grid_search.best_score_:.4f}")
+    # Just for printing purposes for now:
+    import json
+
+    print("Best hyperparameters:", json.loads(json.dumps(grid_search.best_params_, default=float)))
+    # print(f"Best hyperparameters: {grid_search.best_params_}")
+    print("Best CV score:", json.loads(json.dumps(grid_search.best_score_, default=float)))
+    # print(f"Best CV score: {grid_search.best_score_:.4f}")
+
     return grid_search.best_estimator_
 
 
@@ -74,19 +116,47 @@ def main():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--tune", action="store_true") # currently running with python3 backend/train.py --tune
+    parser.add_argument("--model", type=str, default="logistic", choices=["logistic", "rf", "svm", "knn"])
     args = parser.parse_args()
 
+    # Load and build original pipe
     X_train, X_test, y_train, y_test = load_data('backend/data/UCI_Credit_Card.csv')
-    pipe = build_pipeline()
 
-    print("Build successfully. Features used:")
-    print("  Discretized:", DISCRETIZATION_FEATS)
-    print("  Numeric + engineered:", NUMERIC_FEATS + ENGINEERED_FEATS)
-    print("  Ordinal:", ORDINAL_FEATS)
-    print("  Categorical:", CATEGORICAL_FEATS)
+    # Find the best performing model 
+    model_types = ["logistic", "rf", "knn", "svm"]
+    model_performance = {}
+
+    for m_type in model_types:
+        temp_pipe = build_pipeline(model_type=m_type)
+        scores = cross_validate(temp_pipe, X_train, y_train, cv=5)
+        mean_score = np.mean(scores['test_score'])
+        model_performance[m_type] = mean_score
+        print(f"{m_type}: {mean_score:.4f}")
+    
+    best_model_type = max(model_performance, key=model_performance.get)
+    print(f"\nModel selected: {best_model_type.upper()} ({model_performance[best_model_type]:.4f})")
+
+    pipe = build_pipeline(model_type=best_model_type)
+    preprocessor = pipe.named_steps['columntransformer']
+    model_inst = pipe.steps[-1][1]
+
+    # Run feature selection (RFE) to simplify the best model and evaluate performance
+    rfe_results, best_pipe = run_rfe_selection(X_train, y_train, preprocessor, model_inst)
+    baseline_score = model_performance[best_model_type]
+    best_n = int(rfe_results.loc[rfe_results['mean_test_score'].idxmax()]['n_features'])
+    # threshold = -0.01
+    best_rfe_score = rfe_results['mean_test_score'].max()
+    if best_rfe_score < (baseline_score - 0.005):        
+        print("No significant improvement from RFE, changing to baseline model")
+        pipe = build_pipeline(model_type=best_model_type)
+        pipe.fit(X_train, y_train)
+    else:
+        best_n = int(rfe_results.loc[rfe_results['mean_test_score'].idxmax()]['n_features'])
+        print(f"Keeping RFE pipeline (n={best_n}).")
 
     if args.tune:
-        pipe = run_hyperparameter_tuning(pipe, X_train, y_train)
+        # pipe = run_hyperparameter_tuning(pipe, X_train, y_train)
+        pipe = run_hyperparameter_tuning(pipe, X_train, y_train, model_type=best_model_type)
     else:
         print("Training model with default parameters...")
         pipe.fit(X_train, y_train)

@@ -1,5 +1,6 @@
 from pathlib import Path
 import argparse
+from re import search
 import joblib
 import numpy as np
 import pandas as pd
@@ -12,7 +13,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC # TODO
 from sklearn.neighbors import KNeighborsClassifier # TODO
-from sklearn.model_selection import cross_validate, train_test_split, GridSearchCV
+from sklearn.model_selection import cross_validate, train_test_split, GridSearchCV, RandomizedSearchCV
 
 from features import (
     TARGET,
@@ -60,56 +61,56 @@ def load_data(file_path):
         X, y, test_size=0.3, random_state=123, stratify=y
     )
 
-def run_hyperparameter_tuning(pipe, X_train, y_train, model_type="logistic"):
-    print(f"Running hyperparameter tuning for {model_type}...")
+def run_hyperparameter_tuning(pipe, X_train, y_train, model_type="logistic", search_type = "grid"):
+    print("Runs either GridSearchCV or RandomizedSearchCV based on search_type parameter")
+    print(f"Running {search_type} for {model_type}...")
     model_step_name = pipe.steps[-1][0]
     
-    # Get name dyamically before making the grid
-    param_grids = {
-        "rf": {
-            f"{model_step_name}__n_estimators": [100, 200],
-            f"{model_step_name}__max_depth": [5, 10, 15],
-            f"{model_step_name}__min_samples_leaf": [10, 20, 80, 200],
-        },
-        "logistic": {
-            f"{model_step_name}__C": np.logspace(-4, 4, 10)
-        },
-        "knn": {
-            f"{model_step_name}__n_neighbors": [3, 5, 11]
-        },
-        "svm": {
-            f"{model_step_name}__C": [0.1, 1, 10]
+    if model_type == "rf":
+        param_dist = {
+            f"{model_step_name}__n_estimators": np.arange(10, 200, 10),
+            f"{model_step_name}__max_depth": [None] + list(np.arange(5, 20, 5)),
+            f"{model_step_name}__min_samples_split": [2, 5, 10],
+            f"{model_step_name}__max_features": ['sqrt', 'log2'] 
         }
-    }
+    elif model_type == "logistic":
+        param_dist = {
+            f"{model_step_name}__C": np.logspace(-4, 4, 20)
+        }
+    else:
+        param_dist = {} # Use default for other models
 
-    # if model_type == "rf":
-    #     param_grid = {
-    #         "randomforestclassifier__n_estimators": [100, 200],
-    #         "randomforestclassifier__max_depth": [None, 10, 20]
-    #     }
-    # else:
-    #     param_grid = {
-    #         "logisticregression__C": np.logspace(-4, 4, 10)
-    #     }
-    grid_search = GridSearchCV(
-        pipe,
-        param_grids[model_type],
-        cv=5,
-        scoring="accuracy",
-        return_train_score=True
-    )
-    grid_search.fit(X_train, y_train)
+    if search_type == "random":
+        search = RandomizedSearchCV(
+            pipe, 
+            param_distributions=param_dist, 
+            n_iter=10, 
+            cv=5, 
+            scoring='accuracy', 
+            random_state=42,
+            n_jobs=-1,
+            return_train_score=True
+        )
+    else:
+        search = GridSearchCV(
+            pipe, 
+            param_grid=param_dist, 
+            cv=5, 
+            scoring='accuracy', 
+            n_jobs=-1,
+            return_train_score=True
+        )
+
+    search.fit(X_train, y_train)
     
     # Just for printing purposes for now:
     import json
-
-    print("Best hyperparameters:", json.loads(json.dumps(grid_search.best_params_, default=float)))
+    print("Best hyperparameters:", json.loads(json.dumps(search.best_params_, default=float)))
     # print(f"Best hyperparameters: {grid_search.best_params_}")
-    print("Best CV score:", json.loads(json.dumps(grid_search.best_score_, default=float)))
+    print("Best CV score:", json.loads(json.dumps(search.best_score_, default=float)))
     # print(f"Best CV score: {grid_search.best_score_:.4f}")
 
-    return grid_search.best_estimator_
-
+    return search.best_estimator_
 
 def main():
     print("Starting training...")

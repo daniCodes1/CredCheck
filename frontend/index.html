@@ -1,49 +1,124 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Credit Default Predictor</title>
-  </head>
-  <body>
-    <h1>Credit Default Predictor</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-    <form id="f">
-      <label>LIMIT_BAL <input name="LIMIT_BAL" type="number" step="any" value="20000"></label><br/>
-      <label>AGE <input name="AGE" type="number" step="any" value="30"></label><br/>
-      <label>SEX (1=male,2=female) <input name="SEX" type="number" value="2"></label><br/>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CredCheck</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
 
-      <h3>Repayment status</h3>
-      <label>PAY_0 <input name="PAY_0" type="number" value="0"></label><br/>
-      <label>PAY_2 <input name="PAY_2" type="number" value="0"></label><br/>
-      <label>PAY_3 <input name="PAY_3" type="number" value="0"></label><br/>
-      <label>PAY_4 <input name="PAY_4" type="number" value="0"></label><br/>
-      <label>PAY_5 <input name="PAY_5" type="number" value="0"></label><br/>
-      <label>PAY_6 <input name="PAY_6" type="number" value="0"></label><br/>
+<body>
 
-      <h3>Bills</h3>
-      <label>BILL_AMT1 <input name="BILL_AMT1" type="number" step="any" value="0"></label><br/>
-      <label>BILL_AMT2 <input name="BILL_AMT2" type="number" step="any" value="0"></label><br/>
-      <label>BILL_AMT3 <input name="BILL_AMT3" type="number" step="any" value="0"></label><br/>
-      <label>BILL_AMT4 <input name="BILL_AMT4" type="number" step="any" value="0"></label><br/>
-      <label>BILL_AMT5 <input name="BILL_AMT5" type="number" step="any" value="0"></label><br/>
-      <label>BILL_AMT6 <input name="BILL_AMT6" type="number" step="any" value="0"></label><br/>
+  <nav class="navbar">
+    <div class="logo">CredCheck</div>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showPage('predictor')">Predictor</a></li>
+      <li><a href="#" onclick="showPage('eda')">Exploration</a></li>
+      <li><a href="#" onclick="showPage('visualizer')">Analytics</a></li>
+    </ul>
+  </nav>
 
-      <h3>Payments</h3>
-      <label>PAY_AMT1 <input name="PAY_AMT1" type="number" step="any" value="0"></label><br/>
-      <label>PAY_AMT2 <input name="PAY_AMT2" type="number" step="any" value="0"></label><br/>
-      <label>PAY_AMT3 <input name="PAY_AMT3" type="number" step="any" value="0"></label><br/>
-      <label>PAY_AMT4 <input name="PAY_AMT4" type="number" step="any" value="0"></label><br/>
-      <label>PAY_AMT5 <input name="PAY_AMT5" type="number" step="any" value="0"></label><br/>
-      <label>PAY_AMT6 <input name="PAY_AMT6" type="number" step="any" value="0"></label><br/>
+  <main class="container">
+    <section id="predictor" class="page active">
+      <h1>Loan Default Prediction</h1>
+      <p>Enter client data to assess risk using our trained model.</p>
 
-      <h3>Engineered feature</h3>
-      <label>EDUCATION_MARRIAGE <input name="EDUCATION_MARRIAGE" type="number" step="any" value="12"></label><br/>
+      <form id="prediction-form">
+        <div class="form-grid">
+          <fieldset>
+            <legend>Profile & Demographics</legend>
+            <div class="input-group">
+              <label>Credit Limit (NT$)</label>
+              <input name="LIMIT_BAL" type="number" value="20000" required>
+            </div>
+            <div class="input-group">
+              <label>Age</label>
+              <input name="AGE" type="number" value="30" required>
+            </div>
+            <div class="input-group">
+              <label>Education (1-4)</label>
+              <select name="EDUCATION">
+                <option value="1">Grad School</option>
+                <option value="2">University</option>
+                <option value="3">High School</option>
+                <option value="4">Others</option>
+              </select>
+            </div>
+          </fieldset>
 
-      <button type="submit">Predict</button>
-    </form>
+          <fieldset>
+            <legend>Recent Repayment Status</legend>
+            <div class="input-row">
+              <label>
+                Sept
+                <span class="tooltip-container">
+                  <span class="info-icon">ⓘ</span>
+                  <div class="tooltip-text">
+                    <strong>Repayment Codes:</strong><br>
+                    -1 = Paid on time<br>
+                    0 = Revolving credit<br>
+                    1 = 1 month delay<br>
+                    2 = 2 months delay
+                  </div>
+                </span>
+                <input name="PAY_0" type="number" value="0">
+              </label>
 
-    <h2 id="out"></h2>
+              <label>
+                Jan 2026
+                <span class="tooltip-container">
+                  <span class="info-icon">ⓘ</span>
+                  <div class="tooltip-text">
+                    <strong>Repayment Codes:</strong><br>
+                    -1 = Paid on time<br>
+                    0 = Revolving credit<br>
+                    1 = 1 month delay
+                  </div>
+                </span>
+                <input name="PAY_2" type="number" value="0">
+              </label>
 
-    <script src="app.js"></script>
-  </body>
+              <label>
+                Dec 2025
+                <span class="tooltip-container">
+                  <span class="info-icon">ⓘ</span>
+                  <div class="tooltip-text">
+                    <strong>Repayment Codes:</strong><br>
+                    -1 = Paid on time<br>
+                    0 = Revolving credit<br>
+                    1 = 1 month delay<br>
+                    2 = 2 months delay
+                  </div>
+                </span>
+                <input name="PAY_3" type="number" value="0">
+              </label>
+            </div>
+          </fieldset>
+        </div>
+
+        <button type="submit" class="btn-predict">Analyze Risk</button>
+      </form>
+      <div id="result-container" class="hidden">
+        <h2>Result: <span id="prediction-output">--</span></h2>
+      </div>
+    </section>
+
+    <section id="eda" class="page">
+      <h1>Explore Data Insights</h1>
+    </section>
+
+    <section id="process" class="page">
+      <h1>Behind the Prediction</h1>
+    </section>
+
+    <section id="visualizer" class="page">
+      <h1>Dynamic Charts</h1>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+
 </html>

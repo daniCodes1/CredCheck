@@ -116,9 +116,30 @@
       </div>
     </section>
 
-    <section id="eda" class="page">
-      <h1>Explore Data Insights</h1>
+    <section class="eda-section">
+      <h2>Explore Data Insights</h2>
+      <div class="insight-container">
+        <div class="insight-menu">
+          <button class="menu-btn active" onclick="showChart('target')">Target Distribution</button>
+          <button class="menu-btn" onclick="showChart('correlation')">Feature Correlations</button>
+          <button class="menu-btn" onclick="showChart('education')">Education vs Default</button>
+          <button class="menu-btn" onclick="showChart('limit')">Credit Limit Spread</button>
+        </div>
+
+        <div class="insight-display">
+          <div id="target" class="charts">
+            <img src="plots/target_distribution.png" alt="Target Distribution">
+            <p>Visualizing the balance between default (1) and non-default (0) cases. This justifies our use of
+              "balanced" class weights.</p>
+          </div>
+          <div id="correlation" class="charts" style="display:none;">
+            <img src="plots/summary_heatmap.png" alt="Correlation Heatmap">
+            <p>Highlights how credit limits and average bill amounts interact with default risk.</p>
+          </div>
+        </div>
+      </div>
     </section>
+
 
     <section id="process" class="page">
       <h1>Behind the Prediction</h1>
@@ -129,7 +150,7 @@
     </section>
   </main>
 
-  <script src="app.js"></script>
+  <script src="app copy.js"></script>
 </body>
 
 </html>

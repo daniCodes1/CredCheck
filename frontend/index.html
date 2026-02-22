@@ -30,16 +30,26 @@
           <fieldset>
             <legend>Profile & Demographics</legend>
             <div class="input-group">
-              <label>Credit Limit (NT$)</label>
-              <input name="LIMIT_BAL" type="number" value="20000" required>
+              <label>Credit Limit (CAD$)</label>
+              <input name="LIMIT_BAL" type="number" placeholder="e.g. 20000" required>
+            </div>
+
+            <div class="input-group">
+              <label>Typical Monthly Bill (CAD$)</label>
+              <input name="BILL_INPUT" type="number" placeholder="e.g. 1000" required>
+            </div>
+            <div class="input-group">
+              <label>Typical Monthly Payment (CAD$)</label>
+              <input name="PAY_INPUT" type="number" placeholder="e.g. 1000" required>
             </div>
             <div class="input-group">
               <label>Age</label>
-              <input name="AGE" type="number" value="30" required>
+              <input name="AGE" type="number" placeholder="e.g. 30" required>
             </div>
             <div class="input-group">
-              <label>Education (1-4)</label>
-              <select name="EDUCATION">
+              <label>Education level</label>
+              <select name="EDUCATION" required>
+                <option value="" disabled selected>Select your level</option>
                 <option value="1">Grad School</option>
                 <option value="2">University</option>
                 <option value="3">High School</option>
@@ -52,21 +62,6 @@
             <legend>Recent Repayment Status</legend>
             <div class="input-row">
               <label>
-                Sept
-                <span class="tooltip-container">
-                  <span class="info-icon">ⓘ</span>
-                  <div class="tooltip-text">
-                    <strong>Repayment Codes:</strong><br>
-                    -1 = Paid on time<br>
-                    0 = Revolving credit<br>
-                    1 = 1 month delay<br>
-                    2 = 2 months delay
-                  </div>
-                </span>
-                <input name="PAY_0" type="number" value="0">
-              </label>
-
-              <label>
                 Jan 2026
                 <span class="tooltip-container">
                   <span class="info-icon">ⓘ</span>
@@ -74,10 +69,11 @@
                     <strong>Repayment Codes:</strong><br>
                     -1 = Paid on time<br>
                     0 = Revolving credit<br>
-                    1 = 1 month delay
+                    1 = 1 month delay<br>
+                    2+ = 2 to 8+ months delay
                   </div>
                 </span>
-                <input name="PAY_2" type="number" value="0">
+                <input name="PAY_0" type="number" placeholder="e.g. 0" required>
               </label>
 
               <label>
@@ -89,10 +85,25 @@
                     -1 = Paid on time<br>
                     0 = Revolving credit<br>
                     1 = 1 month delay<br>
-                    2 = 2 months delay
+                    2+ = 2 to 8+ months delay
                   </div>
                 </span>
-                <input name="PAY_3" type="number" value="0">
+                <input name="PAY_2" type="number" placeholder="e.g. 0" required>
+              </label>
+
+              <label>
+                Nov 2025
+                <span class="tooltip-container">
+                  <span class="info-icon">ⓘ</span>
+                  <div class="tooltip-text">
+                    <strong>Repayment Codes:</strong><br>
+                    -1 = Paid on time<br>
+                    0 = Revolving credit<br>
+                    1 = 1 month delay<br>
+                    2+ = 2 to 8+ months delay
+                  </div>
+                </span>
+                <input name="PAY_3" type="number" placeholder="e.g. 0" required>
               </label>
             </div>
           </fieldset>

@@ -11,8 +11,8 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC # TODO
-from sklearn.neighbors import KNeighborsClassifier # TODO
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier 
 from sklearn.model_selection import cross_validate, train_test_split, GridSearchCV, RandomizedSearchCV
 
 from features import (
@@ -71,7 +71,8 @@ def run_hyperparameter_tuning(pipe, X_train, y_train, model_type="logistic", sea
             f"{model_step_name}__n_estimators": np.arange(10, 200, 10),
             f"{model_step_name}__max_depth": [None] + list(np.arange(5, 20, 5)),
             f"{model_step_name}__min_samples_split": [2, 5, 10],
-            f"{model_step_name}__max_features": ['sqrt', 'log2'] 
+            f"{model_step_name}__max_features": ['sqrt', 'log2'],
+            # f"{model_step_name}__min_samples_leaf": [1, 2, 5] # more sensitive? try small values
         }
     elif model_type == "logistic":
         param_dist = {

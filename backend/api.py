@@ -5,12 +5,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-MODEL_PATH = Path(__file__).resolve().parent / "models" / "model.joblib"
+from features import add_engineered_features
+
+# MODEL_PATH = Path(__file__).resolve().parent / "models" / "model.joblib"
+MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "model.joblib"
 
 app = FastAPI(title="Credit Default Predictor")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500", "http://127.0.0.1:5501"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -53,6 +56,7 @@ def health():
 @app.post("/predict")
 def predict(req: PredictRequest):
     df = pd.DataFrame([req.model_dump()])
+    df = add_engineered_features(df)
     proba = float(model.predict_proba(df)[0][1])
     pred = int(proba >= 0.5)
     return {"default_probability": proba, "predicted_label": pred}

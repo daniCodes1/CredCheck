@@ -1,6 +1,5 @@
 from pathlib import Path
 import argparse
-from re import search
 import joblib
 import numpy as np
 import pandas as pd

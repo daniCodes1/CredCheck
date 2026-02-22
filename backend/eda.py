@@ -32,14 +32,27 @@ def perform_eda(df):
 
     # 2. Correlation Heatmap
     # Summary view using engineered bill/pay features to avoid clutter
-    summary_cols = ['LIMIT_BAL', 'AGE', 'bill_avg', 'pay_avg', 'util_mean', TARGET]
+    summary_cols = [TARGET, 'util_mean', 'pay_avg', 'bill_avg', 'AGE', 'LIMIT_BAL']
+    labels = {
+        'LIMIT_BAL': 'Credit Limit',
+        'AGE': 'Age',
+        'bill_avg': 'Avg Bill',
+        'pay_avg': 'Avg Payment',
+        'util_mean': 'Avg Utilization',
+        TARGET: 'Default'  
+    }
+    df_plot = train_df[summary_cols].rename(columns=labels)    
     plt.figure(figsize=(10, 8))
-    corr = df[summary_cols].corr()
+    corr = df_plot.corr(numeric_only=True)
     sns.heatmap(corr, annot=True, cmap='flare', center=0, square=True)
     plt.title('Summary Feature Correlations')
-    plt.savefig('plots/summary_heatmap.png')
+    # plt.tight_layout()
+    plt.subplots_adjust(bottom=0.25)
+    plt.xticks(rotation=45, ha='right')
+    plt.yticks(rotation=0)
+    plt.savefig('frontend/plots/summary_heatmap.png')
 
-    # 3. Categorical Relationships (Education/Marriage vs Target), using ordered categories
+    # 3. Categorical Relationships (Education,Marriage vs Target), using ordered categories
     cat_features = ['EDUCATION', 'MARRIAGE']
     mappings = {
         'MARRIAGE': {0: "Unknown", 1: "Married", 2: "Single", 3: "Other"},

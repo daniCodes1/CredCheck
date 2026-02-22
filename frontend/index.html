@@ -116,8 +116,8 @@
       </div>
     </section>
 
-    <section class="eda-section">
-      <h2>Explore Data Insights</h2>
+    <section id="eda" class="page eda-section">
+      <h1>Explore Data Insights</h1>
       <div class="insight-container">
         <div class="insight-menu">
           <button class="menu-btn active" onclick="showChart('target')">Target Distribution</button>
@@ -127,19 +127,25 @@
         </div>
 
         <div class="insight-display">
-          <div id="target" class="charts">
+          <div id="target" class="charts active" style="display: block; opacity: 1;">
             <img src="plots/target_distribution.png" alt="Target Distribution">
-            <p>Visualizing the balance between default (1) and non-default (0) cases. This justifies our use of
-              "balanced" class weights.</p>
+            <p>Visualizing the balance between default (1) and non-default (0) cases.</p>
           </div>
-          <div id="correlation" class="charts" style="display:none;">
+          <div id="correlation" class="charts">
             <img src="plots/summary_heatmap.png" alt="Correlation Heatmap">
-            <p>Highlights how credit limits and average bill amounts interact with default risk.</p>
+            <p>How do credit limits and average bill amounts interact with default risk?</p>
+          </div>
+          <div id="education" class="charts">
+            <img src="plots/education_vs_target.png" alt="Education Analysis">
+            <p>Proportion of defaults across different education levels.</p>
+          </div>
+          <div id="limit" class="charts">
+            <img src="plots/limit_bal_boxplot.png" alt="Limit Balance Boxplot">
+            <p>Distribution of credit limits for each target class.</p>
           </div>
         </div>
       </div>
     </section>
-
 
     <section id="process" class="page">
       <h1>Behind the Prediction</h1>
@@ -150,7 +156,7 @@
     </section>
   </main>
 
-  <script src="app copy.js"></script>
+  <script src="app.js"></script>
 </body>
 
 </html>

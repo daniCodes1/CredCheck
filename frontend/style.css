@@ -139,7 +139,7 @@ input:focus {
     opacity: 1;
 }
 
-/* behaviour for required fields (note currently they are all required)*/
+/* behaviour for required fields (note: currently they are all required)*/
 input:invalid:not(:placeholder-shown) {
     border-color: #e74c3c;
 }
@@ -148,4 +148,79 @@ label:after {
     content: " *";
     color: #e74c3c;
     /* TODO fix the asterisks that are beside the boxes instead of words*/
+}
+
+/* EDA section */
+.insight-container {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    height: 700px;
+    margin-top: 20px;
+}
+
+.insight-menu {
+    display: flex;
+    flex-direction: column;
+    width: 280px;
+    background: #f9f9f9;
+    border-right: 1px solid #ddd;
+}
+
+.menu-btn {
+    padding: 20px 25px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    color: #2c3e50;
+    transition: all 0.3s ease;
+
+}
+
+.menu-btn:hover {
+    background: #f0f0f0;
+}
+
+.menu-btn.active {
+    background: #4d0026 !important;
+    color: white !important;
+    font-weight: bold;
+}
+
+.insight-display {
+    flex: 1;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.charts img {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: block;
+    margin: 0 auto;
+}
+
+.charts {
+    display: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    width: 100%;
+}
+
+.charts.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
 }

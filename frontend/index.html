@@ -124,6 +124,8 @@
           <button class="menu-btn" onclick="showChart('correlation')">Feature Correlations</button>
           <button class="menu-btn" onclick="showChart('education')">Education vs Default</button>
           <button class="menu-btn" onclick="showChart('limit')">Credit Limit Spread</button>
+          <button class="menu-btn" onclick="showChart('')">SHAP Analysis (coming soon)</button>
+
         </div>
 
         <div class="insight-display">
@@ -143,14 +145,108 @@
             <img src="plots/limit_bal_boxplot.png" alt="Limit Balance Boxplot">
             <p>Distribution of credit limits for each target class.</p>
           </div>
+          <div id="limit" class="charts">
+            <img src="" alt="SHAP">
+            <p>SHAP</p>
+          </div>
         </div>
       </div>
     </section>
-
     <section id="process" class="page">
       <h1>Behind the Prediction</h1>
-    </section>
+      <div class="pipeline-path">
 
+        <div class="path-node" onclick="toggleStep('step-data')">
+          <div class="node-circle">1</div>
+          <div class="node-label">Data Engineering & EDA</div>
+          <div id="step-data" class="node-content">
+            <p>Before modeling, <strong>EDA</strong> and <strong>Feature Engineering</strong> was performed. This also
+              transformed raw financial records into features like <em>average utilization</em> and <em>payment
+                proportion</em>
+              ratios.</p>
+            <div class="mini-insight">
+              <strong>Transformation:</strong> Used <code>make_column_transformer</code> to scale numeric features and
+              encode categories, ensuring the model can generalize beyond the training examples.
+            </div>
+          </div>
+        </div>
+
+        <div class="path-node right" onclick="toggleStep('step-baseline')">
+          <div class="node-circle">2</div>
+          <div class="node-label">Model Benchmarking</div>
+          <div id="step-baseline" class="node-content">
+            <p>Established a DummyClassifier baseline to measure our performance. Then,
+              conducted a comparative analysis of <strong>Logistic Regression, SVC, Random Forest,</strong> and
+              <strong>KNN</strong>.
+            </p>
+            <div class="mini-insight">
+              <strong>Validation Strategy:</strong> Each model underwent <code>cross-validation</code>. Both
+              high <code>mean_test_score</code> and a low <code>std_test_score</code> were prioritized to ensure stable
+              performance across all folds.
+            </div>
+          </div>
+        </div>
+
+        <div class="path-node" onclick="toggleStep('step-selection')">
+          <div class="node-circle">3</div>
+          <div class="node-label">Feature Selection</div>
+          <div id="step-selection" class="node-content">
+            <p>To maximize efficiency, used <strong>Recursive Feature Elimination (RFE)</strong> to reduce noise.
+          </div>
+        </div>
+
+        <div class="path-node right" onclick="toggleStep('step-tuning')">
+          <div class="node-circle">4</div>
+          <div class="node-label">Hyperparameter Tuning</div>
+          <div id="step-tuning" class="node-content">
+            <p> Then
+              ran <strong>Hyperparameter Optimization</strong> (Grid and Random Search) to find the ideal settings
+              for the top-performing model.</p>
+            </p>
+          </div>
+        </div>
+
+        <div class="path-node" onclick="toggleStep('step-results')">
+          <div class="node-circle">5</div>
+          <div class="node-label">Final Results</div>
+          <div id="step-results" class="node-content">
+            <p>Through iterative testing, peak <strong>Random Forest accuracy was 0.8107</strong>.
+              By converting <code>LIMIT_BAL</code> to a numeric feature and tuning <code>min_samples_leaf</code>, the
+              model's stability across RFE folds improved.</p>
+
+            <blockquote style="font-size: 0.8em; background: #eee; padding: 10px; border-radius: 10px;">
+              <strong>Top Model Performance:</strong><br>
+              • Random Forest: 0.8107<br>
+              • KNN: 0.7888<br>
+              • SVM: 0.7719<br>
+              • Logistic Regression: 0.7089
+            </blockquote>
+          </div>
+        </div>
+      </div>
+
+      </div>
+      <div class="model-medal">
+        <div class="medal-icon">🏆</div>
+        <h3 style="font-size:15px; margin: 0;">Top-Performing Model:</h3>
+        <h3 style="font-size:30px; margin: 0 0 25px 0;">Random Forest</h3>
+
+        <div class="metric-grid">
+          <div class="metric-item">
+            <span class="metric-value">81.07%</span>
+            <span class="metric-label">Cross-Val Accuracy</span>
+          </div>
+          <div class="metric-item">
+            <span class="metric-value">±0.003</span>
+            <span class="metric-label">Score Variance</span>
+          </div>
+        </div>
+        <p>
+          <strong>Random Forest</strong> proved most effective for credit risk assessment,
+          delivering a ~14% accuracy gain over the Logistic Regression baseline.
+        </p>
+      </div>
+    </section>
     <section id="visualizer" class="page">
       <h1>Dynamic Charts</h1>
     </section>

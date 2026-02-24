@@ -28,7 +28,7 @@ def perform_eda(df):
 
     plt.title('Total Default vs. Non-Default Counts', pad=20)
     sns.despine()
-    plt.savefig('plots/target_distribution.png')
+    plt.savefig('frontend/plots/target_distribution.png')
 
     # 2. Correlation Heatmap
     # Summary view using engineered bill/pay features to avoid clutter
@@ -73,24 +73,21 @@ def perform_eda(df):
                 categories=orders[feat], 
                 ordered=True
             )
-    
-   
             prop_df = plot_df.groupby('Display_Label')[TARGET].value_counts(normalize=True).unstack()
-
-            prop_df.plot(kind='bar', stacked=True, color=['#2ecc71', '#e74c3c'])
+            prop_df.plot(kind='bar', stacked=True, color=['#cb4154', '#4d0026'])
             plt.title(f'Default Proportion by {feat}')
             plt.ylabel('Proportion')
             plt.xlabel(feat)
             plt.legend(title='Default', labels=['No', 'Yes'])
             plt.xticks(rotation=0)
             plt.xlabel(f"{feat.capitalize()} Status")
-            plt.savefig(f'plots/{feat.lower()}_vs_target.png')
+            plt.savefig(f'frontend/plots/{feat.lower()}_vs_target.png')
 
     # 4. Boxplots to detect Outliers (LIMIT_BAL)
     plt.figure(figsize=(8, 6))
     sns.boxplot(x=TARGET, y='LIMIT_BAL', data=df, palette='rocket')
     plt.title('Credit Limit by Target Class')
-    plt.savefig('plots/limit_bal_boxplot.png')
+    plt.savefig('frontend/plots/limit_bal_boxplot.png')
 
 
 if __name__ == "__main__":
@@ -100,8 +97,8 @@ if __name__ == "__main__":
         
     train_df, _ = train_test_split(df, test_size=0.3, random_state=123)
     
-    if not os.path.exists('plots'):
-        os.makedirs('plots')
+    if not os.path.exists('frontend/plots'):
+        os.makedirs('frontend/plots')
         
     perform_eda(train_df)
     print(df['EDUCATION'].value_counts())

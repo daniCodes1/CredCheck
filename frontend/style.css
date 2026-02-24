@@ -224,3 +224,175 @@ label:after {
     opacity: 1;
     transform: translateY(0);
 }
+
+
+/* behind the scenes stuff*/
+.pipeline-path {
+    position: relative;
+    max-width: 800px;
+    margin: 60px auto;
+    padding: 20px 0;
+}
+
+.pipeline-path::before {
+    content: '';
+    position: absolute;
+    left: 53%;
+    top: 0;
+    bottom: 35px;
+    width: 100px;
+    background: #eee;
+    transform: translateX(-50%);
+    border-radius: 15px;
+}
+
+.path-node {
+    position: relative;
+    width: 45%;
+    margin-bottom: 40px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.path-node:not(.right) {
+    text-align: right;
+    left: 0;
+    padding-right: 50px;
+}
+
+.path-node.right {
+    text-align: left;
+    left: 55%;
+    padding-left: 50px;
+}
+
+.path-node::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    width: 60px;
+    height: 4px;
+    background: #00d1b2;
+    z-index: 1;
+}
+
+.path-node:not(.right)::after {
+    right: -10px;
+}
+
+.path-node.right::after {
+    left: -10px;
+}
+
+.node-circle {
+    width: 45px;
+    height: 45px;
+    background: #4d0026;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.path-node:not(.right) .node-circle {
+    /* left side nodes */
+    right: -15%;
+}
+
+.path-node.right .node-circle {
+    /* right side nodes */
+    left: -15%;
+}
+
+.path-node:hover .node-circle {
+    background: #00d1b2;
+    transform: scale(1.2);
+}
+
+.node-label {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    padding-top: 5px;
+    /* was originally too high up*/
+}
+
+.node-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    transition: all 0.5s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    text-align: left;
+}
+
+.node-content.active {
+    max-height: 400px;
+    opacity: 1;
+    padding: 20px;
+    margin-top: 15px;
+    border: 1px solid #00d1b2;
+}
+
+.node-content p {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #555;
+}
+
+/* Final model medal section */
+.model-medal {
+    max-width: 450px;
+    margin: 60px auto 20px;
+    padding: 35px;
+    text-align: center;
+    border: 3px solid #00d1b2;
+    border-radius: 24px;
+    background: #fff;
+    box-shadow: 0 15px 40px rgba(0, 209, 178, 0.1);
+}
+
+.metric-value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #4d0026;
+}
+
+.medal-icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    display: block;
+    animation: celebrate 2s ease-in-out infinite;
+}
+
+@keyframes celebrate {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.mini-insight {
+    background: #e6fffa;
+    border-left: 3px solid #00d1b2;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #006b5d;
+}

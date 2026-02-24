@@ -85,3 +85,14 @@ function showChart(chartId) {
     event.currentTarget.classList.add('active');
   }
 }
+
+function toggleStep(stepId) {
+  const allContents = document.querySelectorAll('.node-content');
+  const target = document.getElementById(stepId);
+  const isAlreadyActive = target.classList.contains('active');
+
+  allContents.forEach(content => content.classList.remove('active'));
+  if (!isAlreadyActive) {
+    target.classList.add('active');
+  }
+}

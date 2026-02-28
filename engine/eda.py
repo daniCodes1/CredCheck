@@ -91,7 +91,7 @@ def perform_eda(df):
 
 
 if __name__ == "__main__":
-    data_path = 'backend/data/UCI_Credit_Card.csv'
+    data_path = 'api/data/UCI_Credit_Card.csv'
     df = pd.read_csv(data_path)
     df = add_engineered_features(df)
         

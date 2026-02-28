@@ -6,6 +6,7 @@ import pandas as pd
 
 from engine.selector import run_rfe_selection
 from sklearn.compose import make_column_transformer
+from sklearn.dummy import DummyClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OrdinalEncoder, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
@@ -33,7 +34,9 @@ def build_pipeline(model_type="logistic"):
         (OneHotEncoder(sparse_output=False, drop="if_binary", handle_unknown="ignore"), CATEGORICAL_FEATS),
         remainder="drop",
     )
-    if model_type == "rf":
+    if model_type == "dummy":
+        model = DummyClassifier(strategy="prior")
+    elif model_type == "rf":
         model = RandomForestClassifier(random_state=123, class_weight="balanced")
         # Random Forests can have high training scores, each individual tree grows deep to capture complex interactions
         # but it's normal and the ensemble averages out to prevent overfitting. opt for more trees when possible
@@ -60,8 +63,7 @@ def load_data(file_path):
         X, y, test_size=0.3, random_state=123, stratify=y
     )
 
-def run_hyperparameter_tuning(pipe, X_train, y_train, model_type="logistic", search_type = "grid"):
-    print("Runs either GridSearchCV or RandomizedSearchCV based on search_type parameter")
+def run_hyperparameter_tuning(pipe, X_train, y_train, model_type="logistic", search_type = "random"):
     print(f"Running {search_type} for {model_type}...")
     model_step_name = pipe.steps[-1][0]
     
@@ -121,18 +123,24 @@ def main():
     args = parser.parse_args()
 
     # Load and build original pipe
-    X_train, X_test, y_train, y_test = load_data('backend/data/UCI_Credit_Card.csv')
+    X_train, X_test, y_train, y_test = load_data('api/data/UCI_Credit_Card.csv')
 
     # Find the best performing model 
-    model_types = ["logistic", "rf", "knn", "svm"]
+    model_types = ["dummy", "logistic", "rf", "knn", "svm"]
     model_performance = {}
+
+    scoring_metrics = {
+        'accuracy': 'accuracy',
+        'f1_macro': 'f1_macro'
+    }
 
     for m_type in model_types:
         temp_pipe = build_pipeline(model_type=m_type)
-        scores = cross_validate(temp_pipe, X_train, y_train, cv=5)
-        mean_score = np.mean(scores['test_score'])
-        model_performance[m_type] = mean_score
-        print(f"{m_type}: {mean_score:.4f}")
+        scores = cross_validate(temp_pipe, X_train, y_train, cv=5, scoring=scoring_metrics)
+        mean_acc = np.mean(scores['test_accuracy'])
+        mean_f1 = np.mean(scores['test_f1_macro'])
+        # mean_score = np.mean(scores['test_score'])
+        model_performance[m_type] = mean_acc
     
     best_model_type = max(model_performance, key=model_performance.get)
     print(f"\nModel selected: {best_model_type.upper()} ({model_performance[best_model_type]:.4f})")

@@ -192,15 +192,21 @@
           <div class="node-label">Feature Selection</div>
           <div id="step-selection" class="node-content">
             <p>To maximize efficiency, used <strong>Recursive Feature Elimination (RFE)</strong> to reduce noise.
+            <div class="mini-insight">
+              <strong>Note:</strong> The Logistic Regression model 70.89%
+              fell behind our 77.88% "best guess" baseline, suggesting
+              credit risk patterns here are too complex for a linear approach.
+            </div>
           </div>
+
         </div>
 
         <div class="path-node right" onclick="toggleStep('step-tuning')">
           <div class="node-circle">4</div>
           <div class="node-label">Hyperparameter Tuning</div>
           <div id="step-tuning" class="node-content">
-            <p> Then
-              ran <strong>Hyperparameter Optimization</strong> (Grid and Random Search) to find the ideal settings
+            <p>
+              Ran <strong>Hyperparameter Optimization</strong> (Grid and Random Search) to find the ideal settings
               for the top-performing model.</p>
             </p>
           </div>
@@ -210,15 +216,16 @@
           <div class="node-circle">5</div>
           <div class="node-label">Final Results</div>
           <div id="step-results" class="node-content">
-            <p>Through iterative testing, peak <strong>Random Forest accuracy was 0.8107</strong>.
-              By converting <code>LIMIT_BAL</code> to a numeric feature and tuning <code>min_samples_leaf</code>, the
-              model's stability across RFE folds improved.</p>
-
+            <p>
+              The <strong>Random Forest</strong> proved most effective, reaching
+              <strong>81.21% accuracy</strong>. We used <strong>RFE</strong> to narrow
+              it down to the 23 most stable features.
+            </p>
             <blockquote style="font-size: 0.8em; background: #eee; padding: 10px; border-radius: 10px;">
-              <strong>Top Model Performance:</strong><br>
-              • Random Forest: 0.8107<br>
+              <strong>Latest Model Benchmarks:</strong><br>
+              • Random Forest: 0.8121<br>
               • KNN: 0.7888<br>
-              • SVM: 0.7719<br>
+              • Dummy (Baseline): 0.7788<br>
               • Logistic Regression: 0.7089
             </blockquote>
           </div>
@@ -233,7 +240,7 @@
 
         <div class="metric-grid">
           <div class="metric-item">
-            <span class="metric-value">81.07%</span>
+            <span class="metric-value">81.21%</span>
             <span class="metric-label">Cross-Val Accuracy</span>
           </div>
           <div class="metric-item">
@@ -241,10 +248,6 @@
             <span class="metric-label">Score Variance</span>
           </div>
         </div>
-        <p>
-          <strong>Random Forest</strong> proved most effective for credit risk assessment,
-          delivering a ~14% accuracy gain over the Logistic Regression baseline.
-        </p>
       </div>
     </section>
     <section id="visualizer" class="page">

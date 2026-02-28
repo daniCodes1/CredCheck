@@ -53,7 +53,7 @@ class PredictRequest(BaseModel):
 def health():
     return {"ok": True}
 
-@app.post("/predict")
+@app.post("/api/predict")
 def predict(req: PredictRequest):
     df = pd.DataFrame([req.model_dump()])
     df = add_engineered_features(df)

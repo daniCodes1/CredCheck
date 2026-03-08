@@ -1,6 +1,8 @@
 const form = document.getElementById("prediction-form");
 const outputText = document.getElementById("prediction-output");
 const resultContainer = document.getElementById("result-container");
+const loading = document.getElementById("loading-indicator");
+const button = document.getElementById("btn-predict");
 
 const CAD_TO_NT = 23.06; // Conversion rate for CAD TO NT$ (used in dataset)
 
@@ -35,19 +37,22 @@ form.addEventListener("submit", async (e) => {
     PAY_AMT1: user_payload.PAY_INPUT, PAY_AMT2: user_payload.PAY_INPUT,
     PAY_AMT3: user_payload.PAY_INPUT, PAY_AMT4: user_payload.PAY_INPUT,
     PAY_AMT5: user_payload.PAY_INPUT, PAY_AMT6: user_payload.PAY_INPUT
-
   };
 
-  // const payload_for_testing = { // hard coded for low probability of default, for testing purposes
-  //   ...user_payload,
-  //   SEX: 1,
-  //   MARRIAGE: 1,
-  //   PAY_4: -1, PAY_5: -1, PAY_6: -1,
-  //   BILL_AMT1: 5000, BILL_AMT2: 5000, BILL_AMT3: 5000,
-  //   BILL_AMT4: 5000, BILL_AMT5: 5000, BILL_AMT6: 5000,
-  //   PAY_AMT1: 5000, PAY_AMT2: 5000, PAY_AMT3: 5000,
-  //   PAY_AMT4: 5000, PAY_AMT5: 5000, PAY_AMT6: 5000
-  // };
+  setLatestUserPoint({
+    AGE: payload.AGE,
+    LIMIT_BAL: payload.LIMIT_BAL
+  });
+  renderD3Visualizer();
+
+  loading.classList.remove("hidden");
+  button.disabled = true;
+  // FOR LOCAL TESTING PURPOSES ONLY - IGNORE
+  // const r = await fetch("http://127.0.0.1:8000/api/predict", {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify(payload),
+  // });
 
   const r = await fetch("/api/predict", {
     method: "POST",
@@ -56,10 +61,13 @@ form.addEventListener("submit", async (e) => {
   });
 
   const data = await r.json();
+  loading.classList.add("hidden");
+  button.disabled = false;
   console.log("Full Payload Sent:", payload);
   console.log("Prediction Response:", data);
   document.getElementById("prediction-output").textContent = `${(data.default_probability * 100).toFixed(2)}%`;
-
+  resultContainer.classList.remove("hidden");
+  renderD3Visualizer();
 });
 
 // Show/hide chart logic
@@ -86,6 +94,13 @@ function showChart(chartId) {
   }
 }
 
+function showPage(pageId) {
+  const target = document.getElementById(pageId);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' });
+  }
+}
+
 function toggleStep(stepId) {
   const allContents = document.querySelectorAll('.node-content');
   const target = document.getElementById(stepId);
@@ -96,3 +111,13 @@ function toggleStep(stepId) {
     target.classList.add('active');
   }
 }
+
+// Load the visualizations 
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".page").forEach(p => {
+    p.style.display = "block";
+    p.classList.add("active");
+  });
+
+  renderD3Visualizer();
+});

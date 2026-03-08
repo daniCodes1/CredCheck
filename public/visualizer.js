@@ -31,7 +31,7 @@ async function renderD3Visualizer() {
 
     let rawData;
     try {
-        rawData = await fetch("http://127.0.0.1:8000/api/data").then(r => r.json());
+        rawData = await fetch("/api/data").then(r => r.json());
     } catch (err) {
         console.error("Error loading CSV:", err);
         container.append("p").text("Sorry! Could not load chart data.");

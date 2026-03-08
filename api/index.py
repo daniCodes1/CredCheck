@@ -60,3 +60,20 @@ def predict(req: PredictRequest):
     proba = float(model.predict_proba(df)[0][1])
     pred = int(proba >= 0.5)
     return {"default_probability": proba, "predicted_label": pred}
+
+@app.get("/api/data") # send features to frontend for vis
+def get_data():
+    df = pd.read_csv("api/data/UCI_Credit_Card.csv")
+    df = add_engineered_features(df)
+    df["LIMIT_BAL_CAD"] = df["LIMIT_BAL"] / 23.06
+
+    cols = [
+        "AGE",
+        "LIMIT_BAL_CAD",
+        "EDUCATION",
+        "default.payment.next.month",
+        "pay_to_bill_total",
+        "util_mean",
+    ]
+
+    return df[cols].to_dict(orient="records")

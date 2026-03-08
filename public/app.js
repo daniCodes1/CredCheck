@@ -6,7 +6,6 @@ const button = document.getElementById("btn-predict");
 
 const CAD_TO_NT = 23.06; // Conversion rate for CAD TO NT$ (used in dataset)
 
-// TODO implement page switching logic from the navbar links
 // TODO make the repayment status user-friendly, dropdown (instead of a code like 0 or 1)
 
 form.addEventListener("submit", async (e) => {
@@ -54,18 +53,25 @@ form.addEventListener("submit", async (e) => {
   //   body: JSON.stringify(payload),
   // });
 
-  const r = await fetch("/api/predict", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
   const data = await r.json();
   loading.classList.add("hidden");
   button.disabled = false;
   console.log("Full Payload Sent:", payload);
   console.log("Prediction Response:", data);
-  document.getElementById("prediction-output").textContent = `${(data.default_probability * 100).toFixed(2)}%`;
+  const probability = data.default_probability;
+  const percent = probability * 100;
+
+  let riskLabel = "";
+  if (percent < 10) {
+    riskLabel = "Low risk";
+  } else if (percent < 30) {
+    riskLabel = "Moderate risk";
+  } else {
+    riskLabel = "High risk";
+  }
+
+  document.getElementById("prediction-output").textContent = `${percent.toFixed(2)}%`;
+  document.getElementById("prediction-label").textContent = riskLabel;
   resultContainer.classList.remove("hidden");
   renderD3Visualizer();
 });

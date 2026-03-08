@@ -1,3 +1,17 @@
+/* general styling */
+fieldset {
+    border: 2px solid #00d1b2;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+legend {
+    color: #00a896;
+    font-weight: 600;
+    padding: 0 8px;
+}
+
+/* navbar section */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -19,16 +33,18 @@
 }
 
 .nav-links li {
-    margin-left: 20px;
+    margin-left: 28px;
 }
 
 .nav-links button {
     background: none;
     border: none;
     padding: 0;
-    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 500;
     color: inherit;
     cursor: pointer;
+    letter-spacing: 0.02em;
 }
 
 .nav-links button:hover {
@@ -109,6 +125,36 @@ input:focus {
 
 .btn-predict:hover {
     background-color: #00b8a0;
+}
+
+/* Prediction output card */
+.result-card {
+    margin-top: 24px;
+    padding: 20px 24px;
+    background: #f6fffd;
+    border-left: 6px solid #00d1b2;
+    border-radius: 10px;
+}
+
+.result-label {
+    margin: 0 0 8px 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.result-value {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.result-subtext {
+    margin: 8px 0 0 0;
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 500;
 }
 
 /* Section for the loading sign while waiting for API*/

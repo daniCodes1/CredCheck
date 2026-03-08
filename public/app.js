@@ -53,6 +53,12 @@ form.addEventListener("submit", async (e) => {
   //   body: JSON.stringify(payload),
   // });
 
+  const r = await fetch("/api/predict", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
   const data = await r.json();
   loading.classList.add("hidden");
   button.disabled = false;

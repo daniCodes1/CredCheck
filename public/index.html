@@ -14,9 +14,10 @@
   <nav class="navbar">
     <div class="logo">CredCheck</div>
     <ul class="nav-links">
-      <li><a href="#" onclick="showPage('predictor')">Predictor</a></li>
-      <li><a href="#" onclick="showPage('eda')">Exploration</a></li>
-      <li><a href="#" onclick="showPage('visualizer')">Analytics</a></li>
+      <li><button onclick="showPage('predictor')">Predict Risk</button></li>
+      <li><button onclick="showPage('process')">Behind the Model</button></li>
+      <li><button onclick="showPage('eda')">Data Insights</button></li>
+      <li><button onclick="showPage('visualizer')">Interactive Analysis</button></li>
     </ul>
   </nav>
 
@@ -109,49 +110,16 @@
           </fieldset>
         </div>
 
-        <button type="submit" class="btn-predict">Analyze Risk</button>
+        <button type="submit" class="btn-predict" id="btn-predict">Analyze Risk</button>
+        <div id="loading-indicator" class="hidden">
+          Analyzing...
+        </div>
       </form>
       <div id="result-container" class="hidden">
         <h2>Result: <span id="prediction-output">--</span></h2>
       </div>
     </section>
 
-    <section id="eda" class="page eda-section">
-      <h1>Explore Data Insights</h1>
-      <div class="insight-container">
-        <div class="insight-menu">
-          <button class="menu-btn active" onclick="showChart('target')">Target Distribution</button>
-          <button class="menu-btn" onclick="showChart('correlation')">Feature Correlations</button>
-          <button class="menu-btn" onclick="showChart('education')">Education vs Default</button>
-          <button class="menu-btn" onclick="showChart('limit')">Credit Limit Spread</button>
-          <button class="menu-btn" onclick="showChart('')">SHAP Analysis (coming soon)</button>
-
-        </div>
-
-        <div class="insight-display">
-          <div id="target" class="charts active" style="display: block; opacity: 1;">
-            <img src="plots/target_distribution.png" alt="Target Distribution">
-            <p>Visualizing the balance between default (1) and non-default (0) cases.</p>
-          </div>
-          <div id="correlation" class="charts">
-            <img src="plots/summary_heatmap.png" alt="Correlation Heatmap">
-            <p>How do credit limits and average bill amounts interact with default risk?</p>
-          </div>
-          <div id="education" class="charts">
-            <img src="plots/education_vs_target.png" alt="Education Analysis">
-            <p>Proportion of defaults across different education levels.</p>
-          </div>
-          <div id="limit" class="charts">
-            <img src="plots/limit_bal_boxplot.png" alt="Limit Balance Boxplot">
-            <p>Distribution of credit limits for each target class.</p>
-          </div>
-          <div id="limit" class="charts">
-            <img src="" alt="SHAP">
-            <p>SHAP</p>
-          </div>
-        </div>
-      </div>
-    </section>
     <section id="process" class="page">
       <h1>Behind the Prediction</h1>
       <div class="pipeline-path">
@@ -250,11 +218,69 @@
         </div>
       </div>
     </section>
+
+    <section id="eda" class="page eda-section">
+      <h1>Exploratory Data Analysis</h1>
+      <div class="insight-container">
+        <div class="insight-menu">
+          <button class="menu-btn active" onclick="showChart('target')">Target Distribution</button>
+          <button class="menu-btn" onclick="showChart('correlation')">Feature Correlations</button>
+          <button class="menu-btn" onclick="showChart('education')">Education vs Default</button>
+          <button class="menu-btn" onclick="showChart('limit')">Credit Limit Spread</button>
+          <button class="menu-btn" onclick="showChart('')">SHAP Analysis (coming soon)</button>
+
+        </div>
+
+        <div class="insight-display">
+          <div id="target" class="charts active" style="display: block; opacity: 1;">
+            <img src="plots/target_distribution.png" alt="Target Distribution">
+            <p>Visualizing the balance between default (1) and non-default (0) cases. The class imbalance motivates the
+              use of class weighting in the models.</p>
+          </div>
+          <div id="correlation" class="charts">
+            <img src="plots/summary_heatmap.png" alt="Correlation Heatmap">
+            <p>How do credit limits and average bill amounts interact with default risk?</p>
+          </div>
+          <div id="education" class="charts">
+            <img src="plots/education_vs_target.png" alt="Education Analysis">
+            <p>Proportion of defaults across different education levels.</p>
+          </div>
+          <div id="limit" class="charts">
+            <img src="plots/limit_bal_boxplot.png" alt="Limit Balance Boxplot">
+            <p>Distribution of credit limits for each target class.</p>
+          </div>
+          <div id="limit" class="charts">
+            <img src="" alt="SHAP">
+            <p>SHAP</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section id="visualizer" class="page">
-      <h1>Dynamic Charts</h1>
+      <h1>Interactive Exploration</h1>
+      <div class="chart-controls">
+        <label for="education-filter">Education:</label>
+        <select id="education-filter">
+          <option value="all">All</option>
+          <option value="1">Grad School</option>
+          <option value="2">University</option>
+          <option value="3">High School</option>
+          <option value="4">Others</option>
+        </select>
+
+        <label for="default-filter">Repayment Outcome:</label>
+        <select id="default-filter">
+          <option value="all">All</option>
+          <option value="0">Non-default</option>
+          <option value="1">Default</option>
+        </select>
+      </div>
+
+      <div id="d3-container"></div>
     </section>
   </main>
-
+  <script src="visualizer.js"></script>
   <script src="app.js"></script>
 </body>
 

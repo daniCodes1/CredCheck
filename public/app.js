@@ -6,81 +6,83 @@ const button = document.getElementById("btn-predict");
 
 const CAD_TO_NT = 23.06; // Conversion rate for CAD TO NT$ (used in dataset)
 
-// TODO make the repayment status user-friendly, dropdown (instead of a code like 0 or 1)
+// TODO consider separating page-specific JS to avoid needing DOM existence checks and other safeguards
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const d = new FormData(form);
-  const user_payload = {}; // Payload object containing limit_bal, age, 
-  for (const [k, v] of d.entries()) {
-    let val = Number(v);
-    // Convert all currency inputs 
-    if (k === "LIMIT_BAL" || k === "BILL_INPUT" || k === "PAY_INPUT") {
-      val = val * CAD_TO_NT;
+    const d = new FormData(form);
+    const user_payload = {}; // Payload object containing limit_bal, age, 
+    for (const [k, v] of d.entries()) {
+      let val = Number(v);
+      // Convert all currency inputs 
+      if (k === "LIMIT_BAL" || k === "BILL_INPUT" || k === "PAY_INPUT") {
+        val = val * CAD_TO_NT;
+      }
+      user_payload[k] = val;
     }
-    user_payload[k] = val;
-  }
 
-  const payload = {
-    ...user_payload,
-    SEX: 1, // Still placeholder
-    MARRIAGE: 1, // Still placeholder
-    PAY_4: user_payload.PAY_3, // Older history will use the earliest month provided by user 
-    PAY_5: user_payload.PAY_3,
-    PAY_6: user_payload.PAY_3,
-    BILL_AMT1: user_payload.BILL_INPUT, BILL_AMT2: user_payload.BILL_INPUT,
-    BILL_AMT3: user_payload.BILL_INPUT, BILL_AMT4: user_payload.BILL_INPUT,
-    BILL_AMT5: user_payload.BILL_INPUT, BILL_AMT6: user_payload.BILL_INPUT,
+    const payload = {
+      ...user_payload,
+      SEX: 1, // Still placeholder
+      MARRIAGE: 1, // Still placeholder
+      PAY_4: user_payload.PAY_3, // Older history will use the earliest month provided by user 
+      PAY_5: user_payload.PAY_3,
+      PAY_6: user_payload.PAY_3,
+      BILL_AMT1: user_payload.BILL_INPUT, BILL_AMT2: user_payload.BILL_INPUT,
+      BILL_AMT3: user_payload.BILL_INPUT, BILL_AMT4: user_payload.BILL_INPUT,
+      BILL_AMT5: user_payload.BILL_INPUT, BILL_AMT6: user_payload.BILL_INPUT,
 
-    PAY_AMT1: user_payload.PAY_INPUT, PAY_AMT2: user_payload.PAY_INPUT,
-    PAY_AMT3: user_payload.PAY_INPUT, PAY_AMT4: user_payload.PAY_INPUT,
-    PAY_AMT5: user_payload.PAY_INPUT, PAY_AMT6: user_payload.PAY_INPUT
-  };
+      PAY_AMT1: user_payload.PAY_INPUT, PAY_AMT2: user_payload.PAY_INPUT,
+      PAY_AMT3: user_payload.PAY_INPUT, PAY_AMT4: user_payload.PAY_INPUT,
+      PAY_AMT5: user_payload.PAY_INPUT, PAY_AMT6: user_payload.PAY_INPUT
+    };
 
-  setLatestUserPoint({
-    AGE: payload.AGE,
-    LIMIT_BAL: payload.LIMIT_BAL
+    // Removed for now, this only works when the visualizer is on the same page.
+    // Will reintroduce if user input is persisted across pages somewhere
+    // setLatestUserPoint({
+    //   AGE: payload.AGE,
+    //   LIMIT_BAL: payload.LIMIT_BAL
+    // });
+    // renderD3Visualizer(); // Update chart immediately with the user's point/where they are 
+
+    loading.classList.remove("hidden");
+    button.disabled = true;
+    // FOR LOCAL TESTING PURPOSES ONLY - IGNORE
+    // const r = await fetch("http://127.0.0.1:8000/api/predict", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(payload),
+    // });
+
+    const r = await fetch("/api/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await r.json();
+    loading.classList.add("hidden");
+    button.disabled = false;
+    console.log("Full Payload Sent:", payload);
+    console.log("Prediction Response:", data);
+    const probability = data.default_probability;
+    const percent = probability * 100;
+
+    let riskLabel = "";
+    if (percent < 10) {
+      riskLabel = "Low risk";
+    } else if (percent < 30) {
+      riskLabel = "Moderate risk";
+    } else {
+      riskLabel = "High risk";
+    }
+
+    document.getElementById("prediction-output").textContent = `${percent.toFixed(2)}%`;
+    document.getElementById("prediction-label").textContent = riskLabel;
+    resultContainer.classList.remove("hidden");
   });
-  renderD3Visualizer(); // Update chart immediately with the user's point/where they are 
-
-  loading.classList.remove("hidden");
-  button.disabled = true;
-  // FOR LOCAL TESTING PURPOSES ONLY - IGNORE
-  // const r = await fetch("http://127.0.0.1:8000/api/predict", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify(payload),
-  // });
-
-  const r = await fetch("/api/predict", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  const data = await r.json();
-  loading.classList.add("hidden");
-  button.disabled = false;
-  console.log("Full Payload Sent:", payload);
-  console.log("Prediction Response:", data);
-  const probability = data.default_probability;
-  const percent = probability * 100;
-
-  let riskLabel = "";
-  if (percent < 10) {
-    riskLabel = "Low risk";
-  } else if (percent < 30) {
-    riskLabel = "Moderate risk";
-  } else {
-    riskLabel = "High risk";
-  }
-
-  document.getElementById("prediction-output").textContent = `${percent.toFixed(2)}%`;
-  document.getElementById("prediction-label").textContent = riskLabel;
-  resultContainer.classList.remove("hidden");
-  renderD3Visualizer(); // Redraw after prediction response
-});
+}
 
 // Show/hide chart logic
 function showChart(chartId) {
@@ -131,23 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
     p.classList.add("active");
   });
 
-  renderD3Visualizer();
-});
-
-// Functions for the About the Dataset section
-async function loadDatasetPage() {
-  const datasetContainer = document.getElementById("dataset-content");
-
-  if (!datasetContainer) return;
-
-  const response = await fetch("data-explorer.html");
-  const html = await response.text();
-
-  datasetContainer.innerHTML = html;
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  loadDatasetPage();
 });
 
 function showDatasetPanel(panelId, event) {
@@ -199,8 +184,9 @@ function getPreviousMonth(baseDate, monthsBack) {
 }
 
 function setRepaymentMonthLabels() {
+  const label0 = document.getElementById("pay-label-0");
+  if (!label0) return; // Don't continue if this page does not contain the repayment labels
   const today = new Date();
-
   document.getElementById("pay-label-0").textContent = formatMonthYear(getPreviousMonth(today, 1));
   document.getElementById("pay-label-2").textContent = formatMonthYear(getPreviousMonth(today, 2));
   document.getElementById("pay-label-3").textContent = formatMonthYear(getPreviousMonth(today, 3));

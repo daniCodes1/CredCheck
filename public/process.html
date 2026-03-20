@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Behind the Model</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="data-explorer.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="site-name">CredCheck</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Predict Risk</a></li>
+            <li><a href="process.html">Behind the Model</a></li>
+            <li><a href="visualizer.html">Explore</a></li>
+            <li><a href="data-explorer.html">About the Data</a></li>
+            <li><a href="eda.html">EDA</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+
+        <section id="process" class="page">
+            <h1>Behind the Prediction</h1>
+            <p style="color:#64748b; margin-top:-5px; margin-left: 15px; font-size: 17px;">
+                Click a step to explore details ↓
+            </p>
+            <div class="pipeline-path">
+
+                <div class="path-node" onclick="toggleStep('step-data')">
+                    <div class="node-circle">1</div>
+                    <div class="node-label">Data Engineering & EDA</div>
+                    <div id="step-data" class="node-content">
+                        <p>Before modeling, <strong>EDA</strong> and <strong>Feature Engineering</strong> was performed.
+                            This also
+                            transformed raw financial records into features like <em>average utilization</em> and
+                            <em>payment
+                                proportion</em>
+                            ratios.
+                        </p>
+                        <div class="mini-insight">
+                            <strong>Transformation:</strong> Used <code>make_column_transformer</code> to scale numeric
+                            features and
+                            encode categories, ensuring the model can generalize beyond the training examples.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="path-node right" onclick="toggleStep('step-baseline')">
+                    <div class="node-circle">2</div>
+                    <div class="node-label">Model Benchmarking</div>
+                    <div id="step-baseline" class="node-content">
+                        <p>Established a DummyClassifier baseline to measure our performance. Then,
+                            conducted a comparative analysis of <strong>Logistic Regression, SVC, Random
+                                Forest,</strong>
+                            and
+                            <strong>KNN</strong>.
+                        </p>
+                        <div class="mini-insight">
+                            <strong>Validation Strategy:</strong> Each model underwent <code>cross-validation</code>.
+                            Both
+                            high <code>mean_test_score</code> and a low <code>std_test_score</code> were prioritized to
+                            ensure stable
+                            performance across all folds.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="path-node" onclick="toggleStep('step-selection')">
+                    <div class="node-circle">3</div>
+                    <div class="node-label">Feature Selection</div>
+                    <div id="step-selection" class="node-content">
+                        <p>To maximize efficiency, used <strong>Recursive Feature Elimination (RFE)</strong> to reduce
+                            noise.
+                        <div class="mini-insight">
+                            <strong>Note:</strong> The Logistic Regression model 70.89%
+                            fell behind our 77.88% "best guess" baseline, suggesting
+                            credit risk patterns here are too complex for a linear approach.
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="path-node right" onclick="toggleStep('step-tuning')">
+                    <div class="node-circle">4</div>
+                    <div class="node-label">Hyperparameter Tuning</div>
+                    <div id="step-tuning" class="node-content">
+                        <p>
+                            Ran <strong>Hyperparameter Optimization</strong> (Grid and Random Search) to find the ideal
+                            settings
+                            for the top-performing model.</p>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="path-node" onclick="toggleStep('step-results')">
+                    <div class="node-circle">5</div>
+                    <div class="node-label">Final Results</div>
+                    <div id="step-results" class="node-content">
+                        <p>
+                            The <strong>Random Forest</strong> proved most effective, reaching
+                            <strong>81.21% accuracy</strong>. Used <strong>RFE</strong> to narrow
+                            it down to the 23 most stable features.
+                        </p>
+                        <blockquote style="font-size: 0.8em; background: #eee; padding: 10px; border-radius: 10px;">
+                            <strong>Latest Model Benchmarks:</strong><br>
+                            • Random Forest: 0.8121<br>
+                            • KNN: 0.7888<br>
+                            • Dummy (Baseline): 0.7788<br>
+                            • Logistic Regression: 0.7089
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+            <div class="model-medal">
+                <div class="medal-icon">🏆</div>
+                <h3 style="font-size:15px; margin: 0;">Top-Performing Model:</h3>
+                <h3 style="font-size:30px; margin: 0 0 25px 0;">Random Forest</h3>
+
+                <div class="metric-grid">
+                    <div class="metric-item">
+                        <span class="metric-value">81.21%</span>
+                        <span class="metric-label">Cross-Val Accuracy</span>
+                    </div>
+                    <div class="metric-item">
+                        <span class="metric-value">±0.003</span>
+                        <span class="metric-label">Score Variance</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

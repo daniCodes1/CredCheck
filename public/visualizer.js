@@ -977,6 +977,9 @@ class CreditDashboardVis {
 }
 
 async function renderD3Visualizer() {
+    const container = document.querySelector("#d3-container");
+    if (!container) return; // only run this if the container exists
+
     if (!dashboardVis) {
         dashboardVis = new CreditDashboardVis("#d3-container");
         await dashboardVis.initVis();
@@ -984,4 +987,5 @@ async function renderD3Visualizer() {
         dashboardVis.updateVis();
     }
 }
+
 

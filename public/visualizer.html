@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="data-explorer.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="site-name">CredCheck</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Predict Risk</a></li>
+            <li><a href="process.html">Behind the Model</a></li>
+            <li><a href="visualizer.html">Explore</a></li>
+            <li><a href="data-explorer.html">About the Data</a></li>
+            <li><a href="eda.html">EDA</a></li>
+        </ul>
+    </nav>
+    <main class="container">
+        <section id="visualizer" class="page">
+            <h1>Interact and Explore</h1>
+            <div id="d3-container"></div>
+        </section>
+    </main>
+    <script src="visualizer.js"></script>
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            renderD3Visualizer();
+        });
+    </script>
+</body>
+
+</html>

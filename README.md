@@ -5,5 +5,5 @@ A full-stack risk assessment tool that predicts credit card default using machin
 
 **The Setup**:
 * Tech stack: FastAPI (Python), JS and D3.js.
-* ML: Evaluated several models (Logistic Regression, KNN, SVM, Dummy), ultimately selecting a Random Forest classifier that reached 81.07% accuracy.
+* ML: Evaluated several models (Logistic Regression, KNN, SVM, Dummy), ultimately selecting a Random Forest classifier.
 * Feature Engineering: Developed custom metrics like credit utilization and payment ratios to improve model performance.

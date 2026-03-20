@@ -1,0 +1,359 @@
+/* Dataset page */
+
+.dataset-page {
+    overflow: hidden;
+}
+
+.section-tag {
+    margin: 0 0 8px 0;
+    color: #00a896;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Top summary section */
+.dataset-summary {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+    margin-top: 10px;
+}
+
+/*  Dataset snapshot card */
+.dataset-summary-text,
+.dataset-summary-card,
+.dataset-block,
+.dataset-panel {
+    background: linear-gradient(180deg, #ffffff 0%, #fbfefe 100%);
+    border: 1px solid #dfeceb;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+}
+
+.dataset-summary-text {
+    padding: 28px;
+}
+
+.dataset-summary-text h1 {
+    border-left: none;
+    padding-left: 0;
+    margin-bottom: 16px;
+    font-size: 2rem;
+    line-height: 1.2;
+}
+
+.dataset-intro {
+    font-size: 1.02rem;
+    color: #4b5563;
+    line-height: 1.7;
+    max-width: 68ch;
+}
+
+.dataset-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.dataset-btn {
+    border: 1px solid #b7ece4;
+    background: #ecfffb;
+    color: #006b5d;
+    padding: 10px 16px;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+.dataset-btn:hover,
+.dataset-btn.active {
+    background: #00d1b2;
+    color: white;
+    border-color: #00d1b2;
+    transform: translateY(-1px);
+}
+
+.dataset-summary-card {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.dataset-summary-card h3 {
+    margin-top: 0;
+    margin-bottom: 18px;
+    color: #2c3e50;
+}
+
+.dataset-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+    gap: 14px;
+}
+
+.dataset-stat {
+    background: #f7fffd;
+    border: 1px solid #d9f4ee;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.dataset-stat-value {
+    display: block;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: #4d0026;
+}
+
+.dataset-stat-label {
+    display: block;
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 0.92rem;
+}
+
+.dataset-purpose-panel {
+    margin-top: 24px;
+}
+
+/* For the Project Purpose in Dataset section */
+.dataset-list-check {
+    list-style: none;
+    padding-left: 0;
+}
+
+.dataset-list-check li {
+    position: relative;
+    padding-left: 26px;
+    margin-bottom: 10px;
+}
+
+.dataset-list-check li::before {
+    content: "✔";
+    position: absolute;
+    left: 0;
+    color: #00a896;
+    font-weight: bold;
+}
+
+.dataset-panel {
+    display: none;
+    padding: 24px 26px;
+}
+
+.dataset-panel.active {
+    display: block;
+    animation: fadeSlideIn 0.35s ease;
+}
+
+.dataset-panel h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.dataset-panel p {
+    line-height: 1.7;
+    color: #4b5563;
+}
+
+
+/* "Default" section in the Project Purpose section */
+.default-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.default-card {
+    background: #f8fffd;
+    border: 1px solid #dfeceb;
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.default-card h4 {
+    margin-top: 0;
+    margin-bottom: 6px;
+    color: #2c3e50;
+}
+
+.default-card p {
+    margin: 0;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+
+/* The two column content for feature categories */
+.dataset-section-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 0.95fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.dataset-block {
+    padding: 24px;
+}
+
+.dataset-block h2 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.dataset-subtle {
+    color: #64748b;
+    margin-top: -4px;
+    margin-bottom: 18px;
+}
+
+/* Feature category cards (eg demographics etc) */
+.feature-card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(180px, 1fr));
+    gap: 14px;
+}
+
+.feature-card {
+    text-align: left;
+    border: 1px solid #dbe9e8;
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.feature-card:hover,
+.feature-card.active {
+    border-color: #00d1b2;
+    box-shadow: 0 15px 24px rgba(0, 209, 178, 0.12);
+    transform: translateY(-2px);
+}
+
+.feature-card-title {
+    display: block;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 6px;
+}
+
+.feature-card-subtitle {
+    display: block;
+    color: #64748b;
+    font-size: 0.92rem;
+    line-height: 1.4;
+}
+
+/* Feature explanation panel shown below whatever user selects */
+.feature-info-wrap {
+    margin-top: 18px;
+}
+
+.feature-info {
+    display: none;
+    background: #f8fffd;
+    border-left: 4px solid #00d1b2;
+    border-radius: 15px;
+    padding: 18px;
+}
+
+.feature-info.active {
+    display: block;
+    animation: fadeSlideIn 0.3s ease;
+}
+
+.feature-info h4 {
+    margin: 0 0 8px 0;
+    color: #2c3e50;
+}
+
+.feature-info p {
+    margin: 0;
+    line-height: 1.65;
+    color: #4b5563;
+}
+
+/* Why this matters (but in timeline form) */
+.timeline-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 10px;
+}
+
+.timeline-step {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px;
+    border-radius: 14px;
+    background: #fbfefe;
+    border: 1px solid #e5f0ef;
+}
+
+.timeline-dot {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border-radius: 50%;
+    background: #4d0026;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+.timeline-step h4 {
+    margin: 2px 0 6px 0;
+    color: #2c3e50;
+}
+
+.timeline-step p {
+    margin: 0;
+    color: #64748b;
+    line-height: 1.55;
+}
+
+.dataset-note {
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #eafff9;
+    border-left: 4px solid #00d1b2;
+    color: #006b5d;
+    line-height: 1.6;
+}
+
+/* Animation and responsive layout styling */
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 900px) {
+
+    .dataset-summary,
+    .dataset-section-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-card-grid {
+        grid-template-columns: 1fr;
+    }
+}

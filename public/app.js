@@ -42,7 +42,7 @@ form.addEventListener("submit", async (e) => {
     AGE: payload.AGE,
     LIMIT_BAL: payload.LIMIT_BAL
   });
-  renderD3Visualizer();
+  renderD3Visualizer(); // Update chart immediately with the user's point/where they are 
 
   loading.classList.remove("hidden");
   button.disabled = true;
@@ -79,7 +79,7 @@ form.addEventListener("submit", async (e) => {
   document.getElementById("prediction-output").textContent = `${percent.toFixed(2)}%`;
   document.getElementById("prediction-label").textContent = riskLabel;
   resultContainer.classList.remove("hidden");
-  renderD3Visualizer();
+  renderD3Visualizer(); // Redraw after prediction response
 });
 
 // Show/hide chart logic
@@ -133,3 +133,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderD3Visualizer();
 });
+
+// Functions for the About the Dataset section
+async function loadDatasetPage() {
+  const datasetContainer = document.getElementById("dataset-content");
+
+  if (!datasetContainer) return;
+
+  const response = await fetch("data-explorer.html");
+  const html = await response.text();
+
+  datasetContainer.innerHTML = html;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadDatasetPage();
+});
+
+function showDatasetPanel(panelId, event) {
+  const panels = document.querySelectorAll('.dataset-panel');
+  const chips = document.querySelectorAll('.dataset-btn');
+
+  panels.forEach(panel => panel.classList.remove('active'));
+  chips.forEach(chip => chip.classList.remove('active'));
+
+  const selectedPanel = document.getElementById(panelId);
+  if (selectedPanel) {
+    selectedPanel.classList.add('active');
+  }
+
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add('active');
+  }
+}
+
+function toggleFeatureInfo(infoId, event) {
+  const infos = document.querySelectorAll('.feature-info');
+  const cards = document.querySelectorAll('.feature-card');
+
+  infos.forEach(info => info.classList.remove('active'));
+  cards.forEach(card => card.classList.remove('active'));
+
+  const selectedInfo = document.getElementById(infoId);
+  if (selectedInfo) {
+    selectedInfo.classList.add('active');
+  }
+
+  if (event && event.currentTarget) {
+    event.currentTarget.classList.add('active');
+  }
+}

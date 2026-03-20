@@ -530,11 +530,32 @@ input:invalid:not(:placeholder-shown) {
     align-items: start;
 }
 
+.education-panel {
+    min-height: 610px;
+}
+
+.chart-info {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+}
+
+.heatmap-filters {
+    display: flex;
+    align-items: center;
+    /* space between Education and Outcome dropdowns */
+    gap: 16px;
+    /* space above the heatmap */
+    margin-bottom: 18px;
+}
+
 .viz-layout {
     background: #fff;
     border: 1px solid #e7ecea;
     border-radius: 12px;
     padding: 16px;
+    position: relative;
+
 }
 
 .viz-title {

@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CredCheck</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="data-explorer.css">
   <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
 
@@ -16,8 +17,9 @@
     <ul class="nav-links">
       <li><button onclick="showPage('predictor')">Predict Risk</button></li>
       <li><button onclick="showPage('process')">Behind the Model</button></li>
-      <li><button onclick="showPage('eda')">Data Insights</button></li>
-      <li><button onclick="showPage('visualizer')">Interactive Analysis</button></li>
+      <li><button onclick="showPage('visualizer')">Explore</button></li>
+      <li><button onclick="showPage('dataset')">About the Data</button></li>
+      <li><button onclick="showPage('eda')">EDA</button></li>
     </ul>
   </nav>
 
@@ -190,7 +192,7 @@
           <div id="step-results" class="node-content">
             <p>
               The <strong>Random Forest</strong> proved most effective, reaching
-              <strong>81.21% accuracy</strong>. We used <strong>RFE</strong> to narrow
+              <strong>81.21% accuracy</strong>. Used <strong>RFE</strong> to narrow
               it down to the 23 most stable features.
             </p>
             <blockquote style="font-size: 0.8em; background: #eee; padding: 10px; border-radius: 10px;">
@@ -221,6 +223,16 @@
           </div>
         </div>
       </div>
+    </section>
+
+
+    <section id="visualizer" class="page">
+      <h1>Interact and Explore</h1>
+      <div id="d3-container"></div>
+    </section>
+
+    <section id="dataset" class="page">
+      <div id="dataset-content"></div>
     </section>
 
     <section id="eda" class="page eda-section">
@@ -261,28 +273,6 @@
       </div>
     </section>
 
-    <section id="visualizer" class="page">
-      <h1>Interactive Exploration</h1>
-      <div class="chart-controls">
-        <label for="education-filter">Education:</label>
-        <select id="education-filter">
-          <option value="all">All</option>
-          <option value="1">Grad School</option>
-          <option value="2">University</option>
-          <option value="3">High School</option>
-          <option value="4">Others</option>
-        </select>
-
-        <label for="default-filter">Repayment Outcome:</label>
-        <select id="default-filter">
-          <option value="all">All</option>
-          <option value="0">Non-default</option>
-          <option value="1">Default</option>
-        </select>
-      </div>
-
-      <div id="d3-container"></div>
-    </section>
   </main>
   <script src="visualizer.js"></script>
   <script src="app.js"></script>

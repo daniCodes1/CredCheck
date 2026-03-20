@@ -7,7 +7,6 @@ from pydantic import BaseModel
 
 from api.features import add_engineered_features
 
-# MODEL_PATH = Path(__file__).resolve().parent / "models" / "model.joblib"
 MODEL_PATH = Path(__file__).resolve().parent.parent / "models" / "model.joblib"
 
 app = FastAPI(title="Credit Default Predictor")
@@ -68,6 +67,7 @@ def get_data():
     df["LIMIT_BAL_CAD"] = df["LIMIT_BAL"] / 23.06
 
     cols = [
+        "PAY_0",
         "AGE",
         "LIMIT_BAL_CAD",
         "EDUCATION",

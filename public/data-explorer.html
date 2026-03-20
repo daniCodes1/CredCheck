@@ -1,0 +1,279 @@
+<section id="dataset" class="page dataset-page">
+    <div class="dataset-summary">
+        <div class="dataset-summary-text">
+            <p class="section-tag">About the Data</p>
+            <h1>Understanding the dataset!</h1>
+            <p class="dataset-intro">
+                Trying to predict credit card default risk by learning from historical
+                financial and repayment behaviour. Click below to get an
+                overview of the dataset, what “default” means, and the kinds of features
+                used by the model.
+            </p>
+
+            <div class="dataset-tabs">
+                <button class="dataset-btn active" onclick="showDatasetPanel('purpose-panel', event)">Purpose</button>
+                <button class="dataset-btn" onclick="showDatasetPanel('background-panel', event)">Background</button>
+                <button class="dataset-btn" onclick="showDatasetPanel('default-panel', event)">What is
+                    Default?</button>
+            </div>
+        </div>
+
+        <div class="dataset-summary-card">
+            <h3>Dataset Snapshot</h3>
+            <div class="dataset-stat-grid">
+                <div class="dataset-stat">
+                    <span class="dataset-stat-value">30,000</span>
+                    <span class="dataset-stat-label">Clients</span>
+                </div>
+                <div class="dataset-stat">
+                    <span class="dataset-stat-value">23</span>
+                    <span class="dataset-stat-label">Features</span>
+                </div>
+                <div class="dataset-stat">
+                    <span class="dataset-stat-value">Binary</span>
+                    <span class="dataset-stat-label">Task Type</span>
+                </div>
+                <div class="dataset-stat">
+                    <span class="dataset-stat-value">0</span>
+                    <span class="dataset-stat-label">Missing Values</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dataset-purpose-panel">
+        <div id="purpose-panel" class="dataset-panel active">
+            <h3>Project Purpose</h3>
+            <ul class="dataset-list-check">
+                <li>
+                    Identify the key drivers behind credit card default and estimate
+                    the likelihood that a client will default based on their
+                    financial and behavioural profile.
+                </li>
+
+                <li>
+                    Learn patterns from historical credit data including
+                    repayment history, credit usage and billing behaviour.
+                </li>
+
+                <li>
+                    Use those patterns to make predictions for
+                    new or unseen client profiles.
+                </li>
+
+                <li>
+                    Provide an estimated credit risk level for a client
+                    based on their financial behaviour.
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="background-panel" class="dataset-panel">
+        <h3>Dataset Background</h3>
+        <ul class="dataset-list-check">
+            <li>UCI "Default of Credit Card Clients" dataset</li>
+            <li>Originally used in study by Yeh & Lien (2009)</li>
+            <li>30,000 credit card clients in Taiwan</li>
+            <li>Binary target: default vs non-default next month</li>
+        </ul>
+    </div>
+
+    <div id="default-panel" class="dataset-panel">
+        <h3>What is Credit Card Default?</h3>
+
+        <div class="default-grid">
+
+            <div class="default-card">
+                <h4>Missed Payments</h4>
+                <p>
+                    Credit card default occurs when a cardholder repeatedly fails
+                    to make required payments over an extended period of time ☹
+                </p>
+            </div>
+
+            <div class="default-card">
+                <h4>Financial Consequences</h4>
+                <p>
+                    This can lead to penalties, interest accumulation,
+                    account restrictions or closure, other financial stress.
+                </p>
+            </div>
+
+            <div class="default-card">
+                <h4>Credit Impact</h4>
+                <p>
+                    Defaults can significantly damage a person's credit rating,
+                    making it harder to obtain loans or financial services.
+                </p>
+            </div>
+
+            <div class="default-card">
+                <h4>Why It Matters</h4>
+                <p>
+                    Understanding default risk helps financial institutions
+                    evaluate creditworthiness and manage lending risk.
+                </p>
+            </div>
+
+        </div>
+    </div>
+    </div>
+
+    <div class="dataset-section-grid">
+        <div class="dataset-block">
+            <h2>Feature Categories</h2>
+            <p class="dataset-subtle">
+                Click a category to learn what kind of information the model uses.
+            </p>
+
+            <div class="feature-card-grid">
+                <button class="feature-card active" onclick="toggleFeatureInfo('feature-demo', event)">
+                    <span class="feature-card-title">Demographics
+                        <span class="tooltip-container">
+                            <span class="info-icon">ⓘ</span>
+                            <div class="tooltip-text">
+                                <strong>Dataset columns:</strong><br>
+                                SEX, EDUCATION, MARRIAGE, AGE
+                            </div>
+                        </span>
+                    </span>
+                    <span class="feature-card-subtitle">Age, education, marital status, gender</span>
+                </button>
+
+                <button class="feature-card" onclick="toggleFeatureInfo('feature-credit', event)">
+                    <span class="feature-card-title">Credit Limit
+                        <span class="tooltip-container">
+                            <span class="info-icon">ⓘ</span>
+                            <div class="tooltip-text">
+                                <strong>Dataset column:</strong><br>
+                                LIMIT_BAL
+                            </div>
+                        </span>
+                    </span>
+                    <span class="feature-card-subtitle">Credit limit available to client </span>
+                </button>
+
+                <button class="feature-card" onclick="toggleFeatureInfo('feature-repay', event)">
+                    <span class="feature-card-title">Repayment History
+                        <span class="tooltip-container">
+                            <span class="info-icon">ⓘ</span>
+                            <div class="tooltip-text">
+                                <strong>Dataset column:</strong><br>
+                                PAY_0, PAY_2, PAY_3, PAY_4, PAY_5, PAY_6
+                            </div>
+                        </span>
+                    </span>
+                    <span class="feature-card-subtitle">Monthly delay and repayment status</span>
+                </button>
+
+                <button class="feature-card" onclick="toggleFeatureInfo('feature-bill', event)">
+                    <span class="feature-card-title">Billing Amounts
+                        <span class="tooltip-container">
+                            <span class="info-icon">ⓘ</span>
+                            <div class="tooltip-text">
+                                <strong>Dataset column:</strong><br>
+                                BILL_AMT1, BILL_AMT2, BILL_AMT3, BILL_AMT4, BILL_AMT5, BILL_AMT6
+                            </div>
+                        </span>
+                    </span>
+                    <span class="feature-card-subtitle">Monthly credit card bill statements</span>
+                </button>
+
+                <button class="feature-card" onclick="toggleFeatureInfo('feature-payments', event)">
+                    <span class="feature-card-title">Payment Activity
+                        <span class="tooltip-container">
+                            <span class="info-icon">ⓘ</span>
+                            <div class="tooltip-text">
+                                <strong>Dataset column:</strong><br>
+                                PAY_AMT1, PAY_AMT2, PAY_AMT3, PAY_AMT4, PAY_AMT5, PAY_AMT6
+                            </div>
+                        </span>
+                    </span>
+                    <span class="feature-card-subtitle">Amounts paid toward the balance each month</span>
+                </button>
+            </div>
+
+            <div class="feature-info-wrap">
+                <div id="feature-demo" class="feature-info active">
+                    <h4>Demographics</h4>
+                    <p>
+                        Demographic variables help describe the client profile.
+                        While they do not explain credit risk on their own, they can interact with repayment and
+                        financial behaviour to reveal meaningful patterns.
+                    </p>
+                </div>
+
+                <div id="feature-credit" class="feature-info">
+                    <h4>Credit Information</h4>
+                    <p>
+                        Credit limit provides context on the client’s available
+                        credit. When combined with bill and payment amounts, it can reveal
+                        how heavily a client may be using their available credit.
+                    </p>
+                </div>
+
+                <div id="feature-repay" class="feature-info">
+                    <h4>Repayment History</h4>
+                    <p>
+                        Repayment status across multiple months can be a strong signal
+                        in credit risk modeling, since repeated delays can indicate greater
+                        financial stress or unstable repayment behaviour.
+                    </p>
+                </div>
+
+                <div id="feature-bill" class="feature-info">
+                    <h4>Billing Data</h4>
+                    <p>
+                        Monthly statement amounts can capture spending and balance
+                        patterns. Sudden increases or consistently high balances may be useful
+                        when estimating risk.
+                    </p>
+                </div>
+
+                <div id="feature-payments" class="feature-info">
+                    <h4>Payment Behaviour</h4>
+                    <p>
+                        Previous payment amounts show how much the client has actually been
+                        paying. Comparing bills to payments can help measure repayment consistency.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dataset-block">
+            <h2>Why this matters</h2>
+            <div class="timeline-mini">
+                <div class="timeline-step">
+                    <div class="timeline-dot">1</div>
+                    <div>
+                        <h4>Historical records</h4>
+                        <p>The model learns from patterns in past client behaviour.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="timeline-dot">2</div>
+                    <div>
+                        <h4>Feature relationships</h4>
+                        <p>Repayment status, bills, and payments are transformed into useful predictors.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-step">
+                    <div class="timeline-dot">3</div>
+                    <div>
+                        <h4>Risk estimation</h4>
+                        <p>For a new client profile, CredCheck applies learned patterns to estimate the likelihood of
+                            default.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dataset-note">
+                So we're not just asking “who defaults?” but trying to understand the financial patterns
+                that are most associated with higher default risk ☹
+            </div>
+        </div>
+    </div>
+</section>

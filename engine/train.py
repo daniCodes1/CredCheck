@@ -7,13 +7,14 @@ import pandas as pd
 from engine.selector import run_rfe_selection
 from sklearn.compose import make_column_transformer
 from sklearn.dummy import DummyClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import cross_validate, train_test_split, GridSearchCV, RandomizedSearchCV
+from sklearn.neighbors import KNeighborsClassifier 
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import KBinsDiscretizer, StandardScaler, OrdinalEncoder, OneHotEncoder
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier 
-from sklearn.model_selection import cross_validate, train_test_split, GridSearchCV, RandomizedSearchCV
 
 from api.features import (
     TARGET,
@@ -138,8 +139,6 @@ def main():
         temp_pipe = build_pipeline(model_type=m_type)
         scores = cross_validate(temp_pipe, X_train, y_train, cv=5, scoring=scoring_metrics)
         mean_acc = np.mean(scores['test_accuracy'])
-        mean_f1 = np.mean(scores['test_f1_macro'])
-        # mean_score = np.mean(scores['test_score'])
         model_performance[m_type] = mean_acc
     
     best_model_type = max(model_performance, key=model_performance.get)
@@ -172,6 +171,13 @@ def main():
 
     outdir = Path("models")
     outdir.mkdir(exist_ok=True)
+    
+    y_pred = pipe.predict(X_test) 
+
+    # Final test performance
+    print("Test Accuracy:", accuracy_score(y_test, y_pred))
+    print(classification_report(y_test, y_pred))
+    # Save trained model
     joblib.dump(pipe, outdir / "model.joblib")
     print("Saved:", outdir / "model.joblib")
 

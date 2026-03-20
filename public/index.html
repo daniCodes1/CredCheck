@@ -65,48 +65,86 @@
             <legend>Recent Repayment Status</legend>
             <div class="input-row">
               <label>
-                Jan 2026
+                <span id="pay-label-0"></span>
                 <span class="tooltip-container">
                   <span class="info-icon">ⓘ</span>
                   <div class="tooltip-text">
-                    <strong>Repayment Codes:</strong><br>
-                    -1 = Paid on time<br>
-                    0 = Revolving credit<br>
-                    1 = 1 month delay<br>
-                    2+ = 2 to 8+ months delay
+                    <strong>What does this mean?</strong><br><br>
+                    This describes how payments were handled in recent months.<br><br>
+
+                    <strong>-1</strong>: Paid the full amount on time<br>
+                    <strong>0</strong>: Paid on time, but not the full amount<br>
+                    <strong>1+</strong>: Payment was late (number = months overdue)
                   </div>
                 </span>
-                <input name="PAY_0" type="number" placeholder="e.g. 0" required>
+                <select name="PAY_0" required>
+                  <option value="" disabled selected>Select status</option>
+                  <option value="-1">Paid on time (in full)</option>
+                  <option value="0">Paid on time (balance remaining)</option>
+                  <option value="1">1 month delay</option>
+                  <option value="2">2 months delay</option>
+                  <option value="3">3 months delay</option>
+                  <option value="4">4 months delay</option>
+                  <option value="5">5 months delay</option>
+                  <option value="6">6 months delay</option>
+                  <option value="7">7 months delay</option>
+                  <option value="8">8+ months delay</option>
+                </select>
               </label>
 
               <label>
-                Dec 2025
+                <span id="pay-label-2"></span>
                 <span class="tooltip-container">
                   <span class="info-icon">ⓘ</span>
                   <div class="tooltip-text">
-                    <strong>Repayment Codes:</strong><br>
-                    -1 = Paid on time<br>
-                    0 = Revolving credit<br>
-                    1 = 1 month delay<br>
-                    2+ = 2 to 8+ months delay
+                    <strong>What does this mean?</strong><br><br>
+                    This describes how payments were handled in recent months.<br><br>
+
+                    <strong>-1</strong>: Paid the full amount on time<br>
+                    <strong>0</strong>: Paid on time, but not the full amount<br>
+                    <strong>1+</strong>: Payment was late (number = months overdue)
                   </div>
                 </span>
-                <input name="PAY_2" type="number" placeholder="e.g. 0" required>
+                <select name="PAY_2" required>
+                  <option value="" disabled selected>Select status</option>
+                  <option value="-1">Paid on time (in full)</option>
+                  <option value="0">Paid on time (balance remaining)</option>
+                  <option value="2">2 months delay</option>
+                  <option value="3">3 months delay</option>
+                  <option value="4">4 months delay</option>
+                  <option value="5">5 months delay</option>
+                  <option value="6">6 months delay</option>
+                  <option value="7">7 months delay</option>
+                  <option value="8">8+ months delay</option>
+                </select>
               </label>
 
               <label>
-                Nov 2025
+                <span id="pay-label-3"></span>
                 <span class="tooltip-container">
                   <span class="info-icon">ⓘ</span>
                   <div class="tooltip-text">
-                    <strong>Repayment Codes:</strong><br>
-                    -1 = Paid on time<br>
-                    0 = Revolving credit<br>
-                    1 = 1 month delay<br>
-                    2+ = 2 to 8+ months delay
+                    <strong>What does this mean?</strong><br><br>
+                    This describes how payments were handled in recent months.<br><br>
+
+                    <strong>-1</strong>: Paid the full amount on time<br>
+                    <strong>0</strong>: Paid on time, but not the full amount<br>
+                    <strong>1+</strong>: Payment was late (number = months overdue)
                   </div>
                 </span>
-                <input name="PAY_3" type="number" placeholder="e.g. 0" required>
+                <select name="PAY_3" required>
+                  <option value="" disabled selected>Select status</option>
+                  <option value="-1">Paid on time (in full)</option>
+                  <option value="0">Paid on time (balance remaining)</option>
+                  <option value="1">1 month delay</option>
+                  <option value="2">2 months delay</option>
+                  <option value="3">3 months delay</option>
+                  <option value="4">4 months delay</option>
+                  <option value="5">5 months delay</option>
+                  <option value="6">6 months delay</option>
+                  <option value="7">7 months delay</option>
+                  <option value="8">8+ months delay</option>
+                </select>
               </label>
             </div>
           </fieldset>
@@ -128,6 +166,9 @@
 
     <section id="process" class="page">
       <h1>Behind the Prediction</h1>
+      <p style="color:#64748b; margin-top:-5px; margin-left: 15px; font-size: 17px;">
+        Click a step to explore details ↓
+      </p>
       <div class="pipeline-path">
 
         <div class="path-node" onclick="toggleStep('step-data')">

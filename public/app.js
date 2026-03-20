@@ -183,3 +183,27 @@ function toggleFeatureInfo(infoId, event) {
     event.currentTarget.classList.add('active');
   }
 }
+
+// Dynamically set labels for the last 3 months in the form
+function formatMonthYear(date) {
+  return date.toLocaleString("en-CA", {
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function getPreviousMonth(baseDate, monthsBack) {
+  const d = new Date(baseDate);
+  d.setMonth(d.getMonth() - monthsBack);
+  return d;
+}
+
+function setRepaymentMonthLabels() {
+  const today = new Date();
+
+  document.getElementById("pay-label-0").textContent = formatMonthYear(getPreviousMonth(today, 1));
+  document.getElementById("pay-label-2").textContent = formatMonthYear(getPreviousMonth(today, 2));
+  document.getElementById("pay-label-3").textContent = formatMonthYear(getPreviousMonth(today, 3));
+}
+
+document.addEventListener("DOMContentLoaded", setRepaymentMonthLabels);

@@ -978,7 +978,12 @@ class CreditDashboardVis {
 
 async function renderD3Visualizer() {
     const container = document.querySelector("#d3-container");
-    if (!container) return; // only run this if the container exists
+    const loader = document.querySelector("#loading");
+
+    if (!container) return;
+
+    // Show the loader since the charts may take awhile to render
+    if (loader) loader.style.display = "flex";
 
     if (!dashboardVis) {
         dashboardVis = new CreditDashboardVis("#d3-container");
@@ -986,6 +991,8 @@ async function renderD3Visualizer() {
     } else {
         dashboardVis.updateVis();
     }
+
+    if (loader) loader.style.display = "none";
 }
 
 
